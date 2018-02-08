@@ -1,0 +1,26 @@
+{
+  "name": "gedcom-cli",
+  "version": "0.0.1",
+  "description": "a command-line tool to parse and display GEDCOM file.",
+  "main": "index.js",
+  "author": "Tianwen HUA",
+  "license": "MIT",
+  "bin": {
+    "gedcom": "bin/gedcom.js"
+  },
+  "scripts": {
+    "start": "node bin/gedcom.js",
+    "test": "jest",
+    "test:watch": "yarn test --watchAll",
+    "test:cov": "yarn test --coverage"
+  },
+  "dependencies": {
+    "chalk": "^2.3.0",
+    "cli-table2": "^0.2.0",
+    "commander": "^2.14.1",
+    "node-emoji": "^1.8.1"
+  },
+  "devDependencies": {
+    "jest": "^22.2.1"
+  }
+}

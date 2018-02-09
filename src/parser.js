@@ -264,8 +264,10 @@ const normalize = ({indi, fami}) => {
     return f
   })
 
-  indi = Array.from(indi.values()).sort((a, b) => a.id > b.id)
-  fami = fami.sort((a, b) => a.id > b.id)
+  // note: should return 1 or -1, not boolean!
+  // IDs are just strings, no specific format.
+  indi = Array.from(indi.values()).sort((a, b) => a.id > b.id ? 1 : -1)
+  fami = fami.sort((a, b) => a.id > b.id ? 1 : -1)
   return {indi, fami}
 }
 

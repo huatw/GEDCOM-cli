@@ -23,7 +23,8 @@ function validate(indi, fami) {
   birthBeforeMarriage(indi, fami)
   marraigeBeforeDeath(indi, fami)
   divorceBeforeDeath(indi, fami)
- 
+  birthBeforeDeath(indi,fami)
+  marriageBeforeDivorce(indi,fami)
   // spint2
   // TODO
 
@@ -88,6 +89,46 @@ const birthBeforeMarriage = (indi, fami) => {
   })
 }
 
+/**
+ * US03: Errors
+ * Birth should occur before death of an individual
+ * @param {indi Map} indi
+ * @param {fami Map} fami
+ */
+const birthBeforeDeath = (indi, fami) => {
+    Array.from(fami.values()).forEach(({id, death}) => {
+      if (death) {
+        const birth = indi.get(id).birth
+  
+        if (birth > death) {
+          errors.push(`death date(${formatDate(death)}) of individual(${id}) should not be after birthday(${formatDate(birth)}) of individual.`)
+        } 
+      }
+    })
+  }
+
+  /**
+ * US04: Errors
+ * Marriage should occur before divorce of spouses,and divorce can only occur after marriage
+ * @param {indi Map} indi
+ * @param {fami Map} fami
+ */
+const marriageBeforeDivorce = (indi, fami) => {
+    Array.from(fami.values()).forEach(({id, marriage, hid, wid}) => {
+      if (marriage) {
+        const hdivorce = indi.get(hid).divorce
+        const wdivorce = indi.get(wid).divorce
+  
+        if (hdivorce && hdivorce < marriage) {
+          errors.push(`marriage date(${formatDate(marriage)}) of individual(${id}) should not be after divorce(${formatDate(hdivorce)}) of husband.`)
+        }
+        if (wdivorce && wdivorce < marriage) {
+          errors.push(`marriage date(${formatDate(marriage)}) of individual(${id}) should not be after divorce(${formatDate(wdivorce)}) of wife.`)
+        } 
+      }
+    })
+  }
+  
 /**
  * US05: Errors
  * Marraige should occur before death of either spouse

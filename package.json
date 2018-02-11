@@ -3,7 +3,11 @@
   "version": "0.0.1",
   "description": "a command-line tool to parse and display GEDCOM file.",
   "main": "index.js",
-  "author": "Tianwen HUA",
+  "authors": [
+    "Asupkay(https://github.com/Asupkay)",
+    "huatw(https://github.com/huatw)",
+    "Mrunmayeesalunke(https://github.com/Mrunmayeesalunke)"
+  ],
   "license": "MIT",
   "bin": {
     "gedcom": "bin/gedcom.js"

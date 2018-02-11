@@ -21,7 +21,9 @@ function validate(indi, fami) {
   // spint1
   datesBeforeCurrentDate(indiArray, famiArray)
   birthBeforeMarriage(indi, fami)
-  
+  marraigeBeforeDeath(indi, fami)
+  divorceBeforeDeath(indi, fami)
+ 
   // spint2
   // TODO
 
@@ -77,13 +79,59 @@ const birthBeforeMarriage = (indi, fami) => {
       const wbirth = indi.get(wid).birth
 
       if (hbirth > marrige) {
-        errors.push(`marrige date(${formatDate(marrige)}) of family(${id}) should not be after birthday(${formatDate(hbirth)}) of husband.`)
+        errors.push(`marraige date(${formatDate(marrige)}) of family(${id}) should not be after birthday(${formatDate(hbirth)}) of husband.`)
       }
       if (wbirth > marrige) {
-        errors.push(`marrige date(${formatDate(marrige)}) of family(${id}) should not be after birthday(${formatDate(wbirth)}) of wife.`)
+        errors.push(`marraige date(${formatDate(marrige)}) of family(${id}) should not be after birthday(${formatDate(wbirth)}) of wife.`)
       }
     }
   })
 }
+
+/**
+ * US05: Errors
+ * Marraige should occur before death of either spouse
+ * @param {indi Map} indi
+ * @param {fami Map} fami
+ */
+const marraigeBeforeDeath = (indi, fami) => {
+  Array.from(fami.values()).forEach(({id, marrige, hid, wid}) => {
+    if(marrige) {
+      const hdeath = indi.get(hid).death
+      const wdeath = indi.get(wid).death
+
+      if(hdeath < marrige) {
+        errors.push(`marraige date(${formatDate(marrige)}) of family(${id}) should not be after death(${formatDate(hdeath)}) of husband.`)
+      }
+      if(wdeath < marrige) {
+        errors.push(`marraige date(${formatDate(marrige)}) of family(${id}) should not be after birthday(${formatDate(wdeath)}) of wife.`)
+      } 
+    }
+  })
+}
+
+
+/**
+ * US06: Errors
+ * Divorce can only occur before death of both spouses
+ * @param {indi Map} indi
+ * @param {fami Map} fami
+ */
+const divorceBeforeDeath = (indi, fami) => {
+  Array.from(fami.values()).forEach(({id, divorce, hid, wid}) => {
+    if(divorce) {
+      const hdeath = indi.get(hid).death
+      const wdeath = indi.get(wid).death
+
+      if(hdeath < divorce) {
+        errors.push(`divorce date(${formatDate(divorce)}) of family(${id}) should not be after death(${formatDate(hdeath)}) of husband.`)
+      }
+      if(wdeath < divorce) {
+        errors.push(`divorce date(${formatDate(divorce)}) of family(${id}) should not be after birthday(${formatDate(wdeath)}) of wife.`)
+      } 
+    }
+  })
+}
+
 
 module.exports = validate

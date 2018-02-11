@@ -96,14 +96,14 @@ const birthBeforeMarriage = (indi, fami) => {
  */
 const marraigeBeforeDeath = (indi, fami) => {
   Array.from(fami.values()).forEach(({id, marrige, hid, wid}) => {
-    if(marrige) {
+    if (marrige) {
       const hdeath = indi.get(hid).death
       const wdeath = indi.get(wid).death
 
-      if(hdeath < marrige) {
+      if (hdeath && hdeath < marrige) {
         errors.push(`marraige date(${formatDate(marrige)}) of family(${id}) should not be after death(${formatDate(hdeath)}) of husband.`)
       }
-      if(wdeath < marrige) {
+      if (wdeath && wdeath < marrige) {
         errors.push(`marraige date(${formatDate(marrige)}) of family(${id}) should not be after death(${formatDate(wdeath)}) of wife.`)
       } 
     }
@@ -119,14 +119,14 @@ const marraigeBeforeDeath = (indi, fami) => {
  */
 const divorceBeforeDeath = (indi, fami) => {
   Array.from(fami.values()).forEach(({id, divorce, hid, wid}) => {
-    if(divorce) {
+    if (divorce) {
       const hdeath = indi.get(hid).death
       const wdeath = indi.get(wid).death
 
-      if(hdeath < divorce) {
+      if (hdeath && hdeath < divorce) {
         errors.push(`divorce date(${formatDate(divorce)}) of family(${id}) should not be after death(${formatDate(hdeath)}) of husband.`)
       }
-      if(wdeath < divorce) {
+      if (wdeath && wdeath < divorce) {
         errors.push(`divorce date(${formatDate(divorce)}) of family(${id}) should not be after death(${formatDate(wdeath)}) of wife.`)
       } 
     }

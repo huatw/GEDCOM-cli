@@ -21,10 +21,11 @@ function validate(indi, fami) {
   // spint1
   datesBeforeCurrentDate(indiArray, famiArray)
   birthBeforeMarriage(indi, fami)
-  marraigeBeforeDeath(indi, fami)
+  birthBeforeDeath(indiArray)
+  marriageBeforeDivorce(famiArray)
+  marriageBeforeDeath(indi, fami)
   divorceBeforeDeath(indi, fami)
-  birthBeforeDeath(indi,fami)
-  marriageBeforeDivorce(indi,fami)
+  
   // spint2
   // TODO
 
@@ -44,25 +45,25 @@ function validate(indi, fami) {
  * US01: Errors
  * check valid dates
  * Dates (birth, marriage, divorce, death) should not be after the current date
- * @param {indi Map} indi 
- * @param {fami Map} fami 
+ * @param {indi[]} indi 
+ * @param {fami[]} fami 
  */
 const datesBeforeCurrentDate = (indi, fami) => {
   indi.forEach(({id, name, birth, death}) => {
     if (birth > Date.now()) {
-      errors.push(`birthday(${formatDate(birth)}) of ${name}(${id}) should not be after current date.`)
+      errors.push(`US01: birthday(${formatDate(birth)}) of ${name}(${id}) should not be after current date.`)
     }
-    if (death > Date.now()) {
-      errors.push(`death(${formatDate(death)}) of ${name}(${id}) should not be after current date.`)
+    if (death && death > Date.now()) {
+      errors.push(`US01: death(${formatDate(death)}) of ${name}(${id}) should not be after current date.`)
     }
   })
   
-  fami.forEach(({id, marrige, divorce}) => {
-    if (marrige > Date.now()) {
-      errors.push(`marrige date(${formatDate(marrige)}) of family(${id}) should not be after current date.`)
+  fami.forEach(({id, marriage, divorce}) => {
+    if (marriage > Date.now()) {
+      errors.push(`US01: marriage date(${formatDate(marriage)}) of family(${id}) should not be after current date.`)
     }
-    if (divorce > Date.now()) {
-      errors.push(`divorce date(${formatDate(divorce)}) of family(${id}) should not be after current date.`)
+    if (divorce && divorce > Date.now()) {
+      errors.push(`US01: divorce date(${formatDate(divorce)}) of family(${id}) should not be after current date.`)
     }
   })
 }
@@ -74,16 +75,16 @@ const datesBeforeCurrentDate = (indi, fami) => {
  * @param {fami Map} fami
  */
 const birthBeforeMarriage = (indi, fami) => {
-  Array.from(fami.values()).forEach(({id, marrige, hid, wid}) => {
-    if (marrige) {
+  Array.from(fami.values()).forEach(({id, marriage, hid, wid}) => {
+    if (marriage) {
       const hbirth = indi.get(hid).birth
       const wbirth = indi.get(wid).birth
 
-      if (hbirth > marrige) {
-        errors.push(`marraige date(${formatDate(marrige)}) of family(${id}) should not be after birthday(${formatDate(hbirth)}) of husband.`)
+      if (hbirth > marriage) {
+        errors.push(`US02: marriage date(${formatDate(marriage)}) of family(${id}) should not be after birthday(${formatDate(hbirth)}) of husband.`)
       }
-      if (wbirth > marrige) {
-        errors.push(`marraige date(${formatDate(marrige)}) of family(${id}) should not be after birthday(${formatDate(wbirth)}) of wife.`)
+      if (wbirth > marriage) {
+        errors.push(`US02: marriage date(${formatDate(marriage)}) of family(${id}) should not be after birthday(${formatDate(wbirth)}) of wife.`)
       }
     }
   })
@@ -92,42 +93,28 @@ const birthBeforeMarriage = (indi, fami) => {
 /**
  * US03: Errors
  * Birth should occur before death of an individual
- * @param {indi Map} indi
- * @param {fami Map} fami
+ * @param {indi[]} indi
  */
-const birthBeforeDeath = (indi, fami) => {
-    Array.from(fami.values()).forEach(({id, death}) => {
-      if (death) {
-        const birth = indi.get(id).birth
-  
-        if (birth > death) {
-          errors.push(`death date(${formatDate(death)}) of individual(${id}) should not be after birthday(${formatDate(birth)}) of individual.`)
-        } 
-      }
-    })
-  }
+const birthBeforeDeath = (indi) => {
+  indi.forEach(({id, name, birth, death}) => {
+    if (death && birth > death) {
+      errors.push(`US03: death(${formatDate(death)}) of ${name}(${id}) should not be after birthday(${formatDate(birth)}).`)
+    }
+  })
+}
 
-  /**
+/**
  * US04: Errors
- * Marriage should occur before divorce of spouses,and divorce can only occur after marriage
- * @param {indi Map} indi
- * @param {fami Map} fami
+ * Marriage should occur before divorce of spouses, and divorce can only occur after marriage
+ * @param {fami[]} fami
  */
-const marriageBeforeDivorce = (indi, fami) => {
-    Array.from(fami.values()).forEach(({id, marriage, hid, wid}) => {
-      if (marriage) {
-        const hdivorce = indi.get(hid).divorce
-        const wdivorce = indi.get(wid).divorce
-  
-        if (hdivorce && hdivorce < marriage) {
-          errors.push(`marriage date(${formatDate(marriage)}) of individual(${id}) should not be after divorce(${formatDate(hdivorce)}) of husband.`)
-        }
-        if (wdivorce && wdivorce < marriage) {
-          errors.push(`marriage date(${formatDate(marriage)}) of individual(${id}) should not be after divorce(${formatDate(wdivorce)}) of wife.`)
-        } 
-      }
-    })
-  }
+const marriageBeforeDivorce = (fami) => {
+  fami.forEach(({id, marriage, divorce}) => {
+    if (divorce && marriage > divorce) {
+      errors.push(`US04: marriage date(${formatDate(marriage)}) of family(${id}) should not be after divorce(${formatDate(divorce)}).`)
+    }
+  })
+}
   
 /**
  * US05: Errors
@@ -135,22 +122,21 @@ const marriageBeforeDivorce = (indi, fami) => {
  * @param {indi Map} indi
  * @param {fami Map} fami
  */
-const marraigeBeforeDeath = (indi, fami) => {
-  Array.from(fami.values()).forEach(({id, marrige, hid, wid}) => {
-    if (marrige) {
+const marriageBeforeDeath = (indi, fami) => {
+  Array.from(fami.values()).forEach(({id, marriage, hid, wid}) => {
+    if (marriage) {
       const hdeath = indi.get(hid).death
       const wdeath = indi.get(wid).death
 
-      if (hdeath && hdeath < marrige) {
-        errors.push(`marraige date(${formatDate(marrige)}) of family(${id}) should not be after death(${formatDate(hdeath)}) of husband.`)
+      if (hdeath && hdeath < marriage) {
+        errors.push(`US05: marriage date(${formatDate(marriage)}) of family(${id}) should not be after death(${formatDate(hdeath)}) of husband.`)
       }
-      if (wdeath && wdeath < marrige) {
-        errors.push(`marraige date(${formatDate(marrige)}) of family(${id}) should not be after death(${formatDate(wdeath)}) of wife.`)
+      if (wdeath && wdeath < marriage) {
+        errors.push(`US05: marriage date(${formatDate(marriage)}) of family(${id}) should not be after death(${formatDate(wdeath)}) of wife.`)
       } 
     }
   })
 }
-
 
 /**
  * US06: Errors
@@ -165,14 +151,13 @@ const divorceBeforeDeath = (indi, fami) => {
       const wdeath = indi.get(wid).death
 
       if (hdeath && hdeath < divorce) {
-        errors.push(`divorce date(${formatDate(divorce)}) of family(${id}) should not be after death(${formatDate(hdeath)}) of husband.`)
+        errors.push(`US06: divorce date(${formatDate(divorce)}) of family(${id}) should not be after death(${formatDate(hdeath)}) of husband.`)
       }
       if (wdeath && wdeath < divorce) {
-        errors.push(`divorce date(${formatDate(divorce)}) of family(${id}) should not be after death(${formatDate(wdeath)}) of wife.`)
+        errors.push(`US06: divorce date(${formatDate(divorce)}) of family(${id}) should not be after death(${formatDate(wdeath)}) of wife.`)
       } 
     }
   })
 }
-
 
 module.exports = validate

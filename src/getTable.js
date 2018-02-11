@@ -37,16 +37,16 @@ function getIndiTable (indi) {
  */
 function getFamiTable (fam) {
   const table = new Table({
-    head: ['ID', 'Marrige', 'Divorce', 'Husband ID', 'Husband Name', 'Wife ID', 'Wife Name' ,'Children']
+    head: ['ID', 'Marriage', 'Divorce', 'Husband ID', 'Husband Name', 'Wife ID', 'Wife Name' ,'Children']
   })
 
-  fam.forEach(({id, marrige, divorce, hid, wid, cids, wname, hname}) => {
-    marrige = formatDate(marrige)
+  fam.forEach(({id, marriage, divorce, hid, wid, cids, wname, hname}) => {
+    marriage = formatDate(marriage)
     divorce = formatDate(divorce)
     cids = cids.length > 0 ? cids.toString() : 'NA'
 
     table.push(
-      [id, marrige, divorce, hid, hname, wid, wname, cids]
+      [id, marriage, divorce, hid, hname, wid, wname, cids]
     )
   })
 

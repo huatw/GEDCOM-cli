@@ -99,14 +99,14 @@ const parseIndi = (lines) => {
 const parseFami = (lines) => {
   const id = lines[0].arg
   const cids = []
-  let hid, wid, marrige, divorce
+  let hid, wid, marriage, divorce
 
   for (let i=1; i<lines.length; i++) {
     const {level, tag, arg} = lines[i]
     if (level === 1 && tag === 'MARR') {
-      if (!marrige) {
+      if (!marriage) {
         i += 1
-        marrige = parseDate(lines[i])
+        marriage = parseDate(lines[i])
       }
       else {
         throw Error(`MARR cannot be assigned multiple times: ${level} ${tag} ${arg}`)
@@ -145,7 +145,7 @@ const parseFami = (lines) => {
     }
   }
 
-  return new Fami(id, hid, wid, cids, marrige, divorce)
+  return new Fami(id, hid, wid, cids, marriage, divorce)
 }
 
 const splitLines = str => str.trim().split(/\n/g)

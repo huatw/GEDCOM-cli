@@ -104,7 +104,7 @@ const marraigeBeforeDeath = (indi, fami) => {
         errors.push(`marraige date(${formatDate(marrige)}) of family(${id}) should not be after death(${formatDate(hdeath)}) of husband.`)
       }
       if(wdeath < marrige) {
-        errors.push(`marraige date(${formatDate(marrige)}) of family(${id}) should not be after birthday(${formatDate(wdeath)}) of wife.`)
+        errors.push(`marraige date(${formatDate(marrige)}) of family(${id}) should not be after death(${formatDate(wdeath)}) of wife.`)
       } 
     }
   })
@@ -127,7 +127,7 @@ const divorceBeforeDeath = (indi, fami) => {
         errors.push(`divorce date(${formatDate(divorce)}) of family(${id}) should not be after death(${formatDate(hdeath)}) of husband.`)
       }
       if(wdeath < divorce) {
-        errors.push(`divorce date(${formatDate(divorce)}) of family(${id}) should not be after birthday(${formatDate(wdeath)}) of wife.`)
+        errors.push(`divorce date(${formatDate(divorce)}) of family(${id}) should not be after death(${formatDate(wdeath)}) of wife.`)
       } 
     }
   })

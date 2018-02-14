@@ -44,7 +44,7 @@ if (!program.args.length) {
 
 /**
  * parse and output single file
- * @param {string} fileName 
+ * @param {string} fileName
  */
 function runFile (fileName) {
   const filePath = path.join(__dirname, '../', fileName)
@@ -85,7 +85,7 @@ function runFile (fileName) {
 
 /**
  * parse and output all file under foldName
- * @param {string} foldName 
+ * @param {string} foldName
  */
 function runFiles (foldName) {
   const foldPath = path.join(__dirname, '../', foldName)

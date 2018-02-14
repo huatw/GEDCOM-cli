@@ -10,7 +10,7 @@ const SEXES = new Set(['M', 'F'])
 
 /**
  * parse line instance to Date
- * @param {line} param0 
+ * @param {line} param0
  * @return {date}
  */
 const parseDate = ({level, tag, arg}) => {
@@ -25,7 +25,7 @@ const parseDate = ({level, tag, arg}) => {
 
 /**
  * transform multiple lines into individual
- * @param {line[]} lines 
+ * @param {line[]} lines
  * @return {indi}
  */
 const parseIndi = (lines) => {
@@ -46,7 +46,7 @@ const parseIndi = (lines) => {
     else if (level === 1 && tag === 'SEX') {
       if (!sex) {
         if (!SEXES.has(arg)) {
-          throw Error(`SEX should only be M or F: ${level} ${tag} ${arg}`)  
+          throw Error(`SEX should only be M or F: ${level} ${tag} ${arg}`)
         }
         sex = arg
       }
@@ -93,7 +93,7 @@ const parseIndi = (lines) => {
 
 /**
  * transform multiple lines into family
- * @param {line[]} lines 
+ * @param {line[]} lines
  * @return {fami}
  */
 const parseFami = (lines) => {
@@ -153,7 +153,7 @@ const splitLine = lineStr => lineStr.trim().match(/^(\d+)\s+(\S+)\s*(.*)/)
 
 /**
  * parse every line into line instance
- * @param {string} lineStr 
+ * @param {string} lineStr
  * @return {line}
  */
 const parseLine = lineStr => {
@@ -174,7 +174,7 @@ const parseLine = lineStr => {
 
 /**
  * filter unused lines
- * @param {line} line 
+ * @param {line} line
  */
 const filterTag = (line) => {
   const types = UNUSED_TYPES.get(line.level)
@@ -183,8 +183,8 @@ const filterTag = (line) => {
 
 /**
  * group line under level 0
- * @param {object} acc 
- * @param {line} line 
+ * @param {object} acc
+ * @param {line} line
  */
 const groupLevel0 = (acc, line) => {
   if (line.level === 0) {
@@ -203,7 +203,7 @@ const TYPE_GEN_FNS = new Map([
 
 /**
  * transform lines to fami or indi
- * @param {lines} lines 
+ * @param {lines} lines
  */
 const constructByType = lines => {
   const tag = lines[0].tag
@@ -217,8 +217,8 @@ const constructByType = lines => {
 
 /**
  * group instance by class type
- * @param {fami|indi} acc 
- * @param {object} obj 
+ * @param {fami|indi} acc
+ * @param {object} obj
  */
 const groupByType = (acc, obj) => {
   if (obj instanceof Fami) {
@@ -240,7 +240,7 @@ const groupByType = (acc, obj) => {
 
 /**
  * parse raw string into {indi: new Map(), fami: new Map()}
- * @param {string} str 
+ * @param {string} str
  * @return {object}
  */
 const parse = (str) => splitLines(str)
@@ -254,7 +254,7 @@ const parse = (str) => splitLines(str)
  * normalize the output
  * add husband name and wife name to family table
  * sort lines
- * @param {object} param0 
+ * @param {object} param0
  * @return {object}
  */
 const normalize = ({indi, fami}) => {

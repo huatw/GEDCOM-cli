@@ -6,7 +6,7 @@ const {formatDate} = require('./util')
 
 /**
  * create individual table string
- * @param {indi}  indi 
+ * @param {indi}  indi
  * @return {string}
  */
 function getIndiTable (indi) {
@@ -32,7 +32,7 @@ function getIndiTable (indi) {
 
 /**
  * create family table string
- * @param  {fami} fami 
+ * @param  {fami} fami
  * @return {string}
  */
 function getFamiTable (fam) {
@@ -53,7 +53,7 @@ function getFamiTable (fam) {
   return table.toString()
 }
 
-module.exports = { 
-  getIndiTable, 
-  getFamiTable 
+module.exports = {
+  getIndiTable,
+  getFamiTable
 }

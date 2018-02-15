@@ -16,11 +16,14 @@ yarn start parse -d gedcom
 
 # see helper for usage
 yarn start -h 
+
+# run unit test
+yarn run test
 ```
 
 ## todo
 main function and workflow is done. 
 
 * more user stories(in validate.js)
-* testing cases(in test folder)
+* more testing cases of user stories(in test folder)
  

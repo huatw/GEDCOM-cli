@@ -9,6 +9,16 @@
     "Mrunmayeesalunke(https://github.com/Mrunmayeesalunke)"
   ],
   "license": "MIT",
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "modules": false
+        }
+      ]
+    ]
+  },
   "bin": {
     "gedcom": "bin/gedcom.js"
   },
@@ -25,6 +35,8 @@
     "node-emoji": "^1.8.1"
   },
   "devDependencies": {
-    "jest": "^22.2.1"
+    "babel-preset-env": "^1.6.1",
+    "jest": "^22.2.1",
+    "rewire": "^3.0.2"
   }
 }

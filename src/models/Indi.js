@@ -6,8 +6,8 @@ class Indi {
    * @param  {string}   id    Unique individual ID
    * @param  {string}   name  Name
    * @param  {string}   sex   Sex/Gender
-   * @param  {string}   birth Birth date
-   * @param  {string}   death Death date
+   * @param  {Date}     birth Birth date
+   * @param  {Date}     death Death date
    * @param  {string}   famc  Unique Family ID where the individual is a child
    * @param  {string[]} fams  Unique Family ID where the individual is a spouse
    * @return {indi}           Individual instance

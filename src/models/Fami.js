@@ -7,8 +7,8 @@ class Fami {
    * @param  {string}   hid      Unique individual ID of husband
    * @param  {string}   wid      Unique individual ID of wife
    * @param  {string[]} cids     Unique individual ID of each child in the family
-   * @param  {string}   marriage Marriage date
-   * @param  {string}   divorce  Divorce date, if appropriate
+   * @param  {Date}     marriage Marriage date
+   * @param  {Date}     divorce  Divorce date, if appropriate
    * @return {indi}              Family instance
    */
   constructor (id, hid, wid, cids=[], marriage, divorce) {

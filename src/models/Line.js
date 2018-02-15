@@ -8,7 +8,11 @@ class Line {
    * @param  {string} arg
    * @return {line}
    */
-  constructor (level, tag, arg) {
+  constructor (level, tag, arg='') {
+    if (!(typeof level === 'number' && tag)) {
+      throw Error(`Line is invalid.`)
+    }
+
     this.level = level
     this.tag = tag
     this.arg = arg

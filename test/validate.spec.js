@@ -146,12 +146,116 @@ describe('US02: birthBeforeMarriage', function () {
 // describe('US04: marriageBeforeDivorce', function () {
 //   const marriageBeforeDivorce = _validate.__get__('marriageBeforeDivorce')
 // })
-// describe('US05: marriageBeforeDeath', function () {
-//   const marriageBeforeDeath = _validate.__get__('marriageBeforeDeath')
-// })
-// describe('US06: divorceBeforeDeath', function () {
-//   const divorceBeforeDeath = _validate.__get__('divorceBeforeDeath')
-// })
+describe('US05: marriageBeforeDeath', function () {
+  const marriageBeforeDeath = _validate.__get__('marriageBeforeDeath')
+
+  const id = 'fake id'
+  const name = 'fake name'
+  const sex = 'M'
+  const birth = new Date(1970, 1, 1)
+  const hdeath = new Date(2015, 1, 1)
+  const wdeath = new Date(2015, 1, 1)
+  const famc = 'fake famc'
+  const fams = []
+
+  const fid = 'fake fid'
+  const hid = 'fake hid'
+  const wid = 'fake wid'
+  const marriage = new Date(2222, 1, 1)
+
+  it('returns empty error array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(marriageBeforeDeath(indi, fami)).toEqual([])
+  })
+
+  it('returns array with two errors with husband and wife death before marriage error', () => {
+    const indi = new Map([
+      [hid, new Indi(hid, name, sex, birth, hdeath, famc, fams)],
+      [wid, new Indi(wid, name, sex, birth, wdeath, famc, fams)]
+    ])
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [], marriage)]
+    ])
+
+    expect(marriageBeforeDeath(indi, fami)).toEqual([
+      `US05: marriage date(${formatDate(marriage)}) of family(${fid}) should not be after death(${formatDate(hdeath)}) of husband.`,
+      `US05: marriage date(${formatDate(marriage)}) of family(${fid}) should not be after death(${formatDate(wdeath)}) of wife.`
+    ])
+  })
+
+  it('returns array with only one wife marraige before death error', () => {
+    const indi = new Map([
+      [hid, new Indi(hid, name, sex, birth, undefined, famc, fams)],
+      [wid, new Indi(wid, name, sex, birth, wdeath, famc, fams)]
+    ])
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [], marriage)]
+    ])
+
+    expect(marriageBeforeDeath(indi, fami)).toEqual([
+      `US05: marriage date(${formatDate(marriage)}) of family(${fid}) should not be after death(${formatDate(wdeath)}) of wife.`
+    ])
+  })
+
+})
+describe('US06: divorceBeforeDeath', function () {
+  const divorceBeforeDeath = _validate.__get__('divorceBeforeDeath')
+
+  const id = 'fake id'
+  const name = 'fake name'
+  const sex = 'M'
+  const birth = new Date(1970, 1, 1)
+  const hdeath = new Date(2015, 1, 1)
+  const wdeath = new Date(2015, 1, 1)
+  const famc = 'fake famc'
+  const fams = []
+
+  const fid = 'fake fid'
+  const hid = 'fake hid'
+  const wid = 'fake wid'
+  const marriage = new Date(2014, 1, 1)
+  const divorce = new Date(2222, 1, 1)
+
+  it('returns empty error array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(divorceBeforeDeath(indi, fami)).toEqual([])
+  })
+
+  it('returns array with two errors with husband and wife death before divorce error', () => {
+    const indi = new Map([
+      [hid, new Indi(hid, name, sex, birth, hdeath, famc, fams)],
+      [wid, new Indi(wid, name, sex, birth, wdeath, famc, fams)]
+    ])
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [], marriage, divorce)]
+    ])
+
+    expect(divorceBeforeDeath(indi, fami)).toEqual([
+      `US06: divorce date(${formatDate(divorce)}) of family(${fid}) should not be after death(${formatDate(hdeath)}) of husband.`,
+      `US06: divorce date(${formatDate(divorce)}) of family(${fid}) should not be after death(${formatDate(wdeath)}) of wife.`
+    ])
+  })
+
+  it('returns array with only one wife divorce before death error', () => {
+    const indi = new Map([
+      [hid, new Indi(hid, name, sex, birth, undefined, famc, fams)],
+      [wid, new Indi(wid, name, sex, birth, wdeath, famc, fams)]
+    ])
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [], marriage, divorce)]
+    ])
+
+    expect(divorceBeforeDeath(indi, fami)).toEqual([
+      `US06: divorce date(${formatDate(divorce)}) of family(${fid}) should not be after death(${formatDate(wdeath)}) of wife.`
+    ])
+  })
+
+
+})
 // describe('US07: lessThen150YearsOld', function () {
 //   const lessThen150YearsOld = _validate.__get__('lessThen150YearsOld')
 // })

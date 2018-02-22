@@ -181,9 +181,17 @@ const divorceBeforeDeath = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const lessThen150YearsOld = (indi, fami) => {
+const lessThen150YearsOld = (indi) => {
   const errors = []
-  // TODO
+
+  indi.forEach(({id, name, birth, death}) => {
+    const age = (death || new Date()).getFullYear() - birth.getFullYear()
+
+    if (age > 0 && age > 150) {
+      errors.push(`US07: age ${age} of ${name}(${id}) should not be more than 150.`)
+    }
+  })
+
   return errors
 }
 

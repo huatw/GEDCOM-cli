@@ -194,7 +194,7 @@ const lessThen150YearsOld = (indi, fami) => {
  * @param {indi Map} indi
  * @param {fami Map} fami
  * @return {Array}
- */
+ : */
 const birthBeforeMarriageOfParents = (indi, fami) => {
   const anomalies = []
   // TODO
@@ -237,7 +237,71 @@ const marriageAfter14 = (indi, fami) => {
  */
 const noBigamy = (indi, fami) => {
   const anomalies = []
-  // TODO
+  
+    let fammap = {}
+
+    fami.forEach(({id, marriage, divorce, wid, hid}) => {
+        if(!divorce) {
+            divorce = Date.now()
+        }
+
+        if(!fammap[wid]) {
+            fammap[wid] = [{
+                id,
+                marriage,
+                divorce
+            }]
+        } else {
+            fammap[wid].forEach(({id: fid, marriage: marri, divorce: divor}) => { 
+                if(marri == marriage) {
+                    anomalies.push(`US11: wife(${wid}) marriage(${id}) on ${formatDate(marriage)} cannot have the same date as marriage(${fid}) on ${formatDate(marri)}`)
+                } 
+                else if(marri < marriage) {
+                    if(marriage <= divor) {
+                        anomalies.push(`US11: wife(${wid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
+                    }
+                } else {
+                    if(marri <= divorce) {
+                        anomalies.push(`US11: wife(${wid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
+                    }
+                }
+            })
+            fammap[wid].push({
+                id,
+                marriage,
+                divorce
+            })
+        }
+
+        if(!fammap[hid]) {
+            fammap[hid] = [{
+                id,
+                marriage,
+                divorce
+            }]
+        } else {
+            fammap[hid].forEach(({id: fid, marriage: marri, divorce: divor}) => { 
+                if(marri == marriage) {
+                    anomalies.push(`US11: husband(${hid}) marriage(${id}) on ${formatDate(marriage)} cannot have the same date as marriage(${fid}) on ${formatDate(marri)}`)
+                } 
+                else if(marri < marriage) {
+                    if(marriage <= divor) {
+                        anomalies.push(`US11: husband(${hid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
+                    }
+                } else {
+                    if(marri <= divorce) {
+                        anomalies.push(`US11: husband(${hid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
+                    }
+                }
+            })
+            fammap[hid].push({
+                id,
+                marriage,
+                divorce
+            })
+        }
+    })
+
   return anomalies
 }
 

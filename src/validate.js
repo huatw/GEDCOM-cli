@@ -253,7 +253,22 @@ const birthBeforeDeathOfParents = (indi, fami) => {
  */
 const marriageAfter14 = (indi, fami) => {
   const anomalies = []
-  // TODO
+
+  fami.forEach(({id, marriage, hid, wid}) => {
+    const hbirth = indi.get(hid).birth
+    const wbirth = indi.get(wid).birth
+    const hAge =getAge(hbirth, marriage)
+    const wAge =getAge(wbirth, marriage)
+
+    if (hAge < 14) {
+      anomalies.push(`US10: Age ${hAge} of husband should be above 14 during marriage(${formatDate(marriage)}).`)
+    }
+    if (wAge < 14) {
+      anomalies.push(`US10: Age ${wAge} of wife should be above 14 during marriage(${formatDate(marriage)}).`)
+    }
+
+  })
+
   return anomalies
 }
 

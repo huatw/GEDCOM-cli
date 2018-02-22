@@ -2,6 +2,8 @@
 
 const formatDate = d => d === undefined ? 'NA' : d.toLocaleDateString()
 
+const getAge = (birth, death) => (death || new Date()).getFullYear() - birth.getFullYear()
+
 /**
  * naive implementation of flatMap
  * @param  {Array}   arr
@@ -13,5 +15,6 @@ const flatMap = (arr, fn) =>
 
 module.exports = {
   formatDate,
-  flatMap
+  getAge,
+  flatMap,
 }

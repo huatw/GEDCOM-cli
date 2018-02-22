@@ -2,6 +2,7 @@
 
 const {
   formatDate,
+  getAge,
   flatMap
 } = require('./util')
 
@@ -185,7 +186,7 @@ const lessThen150YearsOld = (indi) => {
   const errors = []
 
   indi.forEach(({id, name, birth, death}) => {
-    const age = (death || new Date()).getFullYear() - birth.getFullYear()
+    const age = getAge(birth, death)
 
     if (age > 0 && age > 150) {
       errors.push(`US07: age ${age} of ${name}(${id}) should not be more than 150.`)
@@ -205,7 +206,27 @@ const lessThen150YearsOld = (indi) => {
  : */
 const birthBeforeMarriageOfParents = (indi, fami) => {
   const anomalies = []
-  // TODO
+
+  fami.forEach(({id, marriage, divorce, cids}) => {
+    cids.forEach((cid) => {
+      const cbirth = indi.get(cid).birth
+      const cname = indi.get(cid).name
+
+      if (marriage < cbirth) {
+        anomalies.push(`US08: birth ${formatDate(cbirth)} of child ${cname}(${cid}) should be after marriage(${formatDate(marriage)}) in family(${id}).`)
+      }
+
+      if (divorce) {
+        const lastDate = new Date(divorce.getTime())
+        lastDate.setMonth(lastDate.getMonth() + 8)
+
+        if (lastDate > cbirth) {
+          anomalies.push(`US08: birth ${formatDate(cbirth)} of child ${cname}(${cid}) should be before 9 months after divorce(${formatDate(divorce)}) in family(${id}).`)
+        }
+      }
+    })
+  })
+
   return anomalies
 }
 

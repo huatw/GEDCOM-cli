@@ -2,7 +2,10 @@
 
 const Table = require('cli-table2')
 
-const {formatDate} = require('./util')
+const {
+  getAge,
+  formatDate
+} = require('./util')
 
 /**
  * create individual table string
@@ -15,7 +18,7 @@ function getIndiTable (indi) {
   })
 
   indi.forEach(({id, name, sex, birth, death, famc, fams}) => {
-    const age = (death || new Date()).getFullYear() - birth.getFullYear()
+    const age = getAge(birth, death)
     const alive = death === undefined
     birth = formatDate(birth)
     death = formatDate(death)

@@ -92,7 +92,10 @@ function runFiles (foldName) {
 
   fs.readdir(foldPath, (err, files) => {
     files.forEach(fileName => {
-      runFile(path.join(foldName, fileName))
+      // ignore temporary file when editing
+      if (!fileName.startsWith('.')) {
+        runFile(path.join(foldName, fileName))
+      }
     })
   })
 }

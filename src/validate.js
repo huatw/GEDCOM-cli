@@ -346,7 +346,26 @@ const noBigamy = (indi, fami) => {
  */
 const parentsNotTooOld = (indi, fami) => {
   const anomalies = []
-  // TODO
+
+  fami.forEach(({id, hid, wid, cids}) =>  {
+    let husb = indi.get(hid)
+    let wife = indi.get(wid)
+
+    for(let i = 0; i < cids.length; i++) {
+      let child = indi.get(cids[i])
+      let husbAge = getAge(husb.birth, husb.death)
+      let wifeAge = getAge(wife.birth, wife.death)
+      let childAge = getAge(child.birth, child.death)
+
+      if(husbAge - childAge >= 80) {
+        anomalies.push(`US12: husband(${hid}) age ${husbAge} of marriage: marriage(${id}) cannot be 80 (total: ${husbAge - childAge}) years older than child ${cids[i]} of age ${childAge}`)
+      }
+      if(wifeAge - childAge >= 60) {
+        anomalies.push(`US12: wife(${wid}) age ${wifeAge} of marriage: marriage(${id}) cannot be 60 (total: ${wifeAge - childAge}) years older than child ${cids[i]} of age ${childAge}`)
+      }
+    }
+  })
+
   return anomalies
 }
 

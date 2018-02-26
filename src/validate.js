@@ -238,31 +238,34 @@ const birthBeforeMarriageOfParents = (indi, fami) => {
  * @return {Array}
  */
 const birthBeforeDeathOfParents = (indi, fami) => {
-  const birthBeforeDeathOfParents = (indi, fami) => {
-    const anomalies = []
-  
-    fami.forEach(({id, hid, wid, cid}) =>  {
-     const wdeath = indi.get(wid).death
-     const cbirth = indi.get(cid).birth
-      
-          
-        if (cbirth < wdeath) {
-          anomalies.push(`US09: Child ${formatDate(cbirth)}  should be born before death  (${formatDate(wdeath)}) of wife(${wid}).`)
-        }
-      const hdeath = indi.get(hid).death
-      const hage = getAge(hdeath)
+  const errors = []
+
+  fami.forEach(({id, hid, wid, cids}) => {
+    const wdeath = indi.get(wid).death
+    const hdeath = indi.get(hid).death
+
+    cids.forEach((cid) => {
       const cbirth = indi.get(cid).birth
-      const cage = getAge(cbirth)
-        
-      if (cage < hage-9) {
-        anomalies.push(`US09: Child ${formatDate(cbirth)}  should be born within 9 months after (${formatDate(hdeath)}) of husband(${hid}).`)
+      const cname = indi.get(cid).name
+
+      if (wdeath && cbirth > wdeath) {
+        errors.push(`US09: birthday(${formatDate(cbirth)}) of child ${cname}(${cid}) should be before death(${formatDate(wdeath)}) of wife(${wid}).`)
       }
-     
+
+      if (hdeath) {
+        const lastDate = new Date(hdeath.getTime())
+        lastDate.setMonth(lastDate.getMonth() + 9)
+
+        if (lastDate < cbirth) {
+          errors.push(`US09: birthday(${formatDate(cbirth)}) of child ${cname}(${cid}) should be within 9 months after death(${formatDate(hdeath)}) of husband(${hid}).`)
+        }
+      }
     })
-  
-    return anomalies
-  }
- 
+  })
+
+  return errors
+}
+
 /**
  * US10: Anomalies
  * Marriage should be at least 14 years after birth of both spouses
@@ -368,22 +371,23 @@ const parentsNotTooOld = (indi, fami) => {
   const anomalies = []
 
   fami.forEach(({id, hid, wid, cids}) =>  {
-    let husb = indi.get(hid)
-    let wife = indi.get(wid)
+    const husb = indi.get(hid)
+    const wife = indi.get(wid)
 
-    for(let i = 0; i < cids.length; i++) {
-      let child = indi.get(cids[i])
-      let husbAge = getAge(husb.birth, husb.death)
-      let wifeAge = getAge(wife.birth, wife.death)
-      let childAge = getAge(child.birth, child.death)
+    cids.forEach((cid) => {
+      const child = indi.get(cid)
+      const husbAge = getAge(husb.birth, husb.death)
+      const wifeAge = getAge(wife.birth, wife.death)
+      const childAge = getAge(child.birth, child.death)
 
-      if(husbAge - childAge >= 80) {
-        anomalies.push(`US12: husband(${hid}) age ${husbAge} of marriage: marriage(${id}) cannot be 80 (total: ${husbAge - childAge}) years older than child ${cids[i]} of age ${childAge}`)
+      if (husbAge - childAge >= 80) {
+        anomalies.push(`US12: husband(${hid}) age ${husbAge} of marriage: marriage(${id}) cannot be 80 (total: ${husbAge - childAge}) years older than child ${cid} of age ${childAge}`)
       }
-      if(wifeAge - childAge >= 60) {
-        anomalies.push(`US12: wife(${wid}) age ${wifeAge} of marriage: marriage(${id}) cannot be 60 (total: ${wifeAge - childAge}) years older than child ${cids[i]} of age ${childAge}`)
+
+      if (wifeAge - childAge >= 60) {
+        anomalies.push(`US12: wife(${wid}) age ${wifeAge} of marriage: marriage(${id}) cannot be 60 (total: ${wifeAge - childAge}) years older than child ${cid} of age ${childAge}`)
       }
-    }
+    })
   })
 
   return anomalies

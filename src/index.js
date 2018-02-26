@@ -48,37 +48,42 @@ if (!program.args.length) {
  */
 function runFile (fileName) {
   const filePath = path.join(__dirname, '../', fileName)
-
-  fs.readFile(filePath, 'utf8', (err, fileStr) => {
-    if (err) {
-      throw err
+  fs.stat(filePath, (err, stats) => {
+    if (!stats.isFile()) {
+      return
     }
 
-    const {indi, fami} = parse(fileStr)
-    const {
-      indi: normalizedIndi,
-      fami: normalizedFami
-    } = normalize({indi, fami})
+    fs.readFile(filePath, 'utf8', (err, fileStr) => {
+      if (err) {
+        throw err
+      }
 
-    // output table
-    console.log()
-    console.log('>'.repeat(100))
-    console.log(chalk.bold.bgGreen('TABLE: '), chalk.green.underline(fileName))
-    console.log(chalk.bold.green('INDIVIDUAL'))
-    console.log(getIndiTable(normalizedIndi))
-    console.log(chalk.bold.green('FAMILY'))
-    console.log(getFamiTable(normalizedFami))
+      const {indi, fami} = parse(fileStr)
+      const {
+        indi: normalizedIndi,
+        fami: normalizedFami
+      } = normalize({indi, fami})
 
-    // output errors and anomalies
-    const {errors, anomalies} = validate(indi, fami)
-
-    errors.forEach((error) => {
+      // output table
       console.log()
-      console.log(emoji.get('x'), chalk.red('Error:'), error)
-    })
-    anomalies.forEach((anomaly) => {
-      console.log()
-      console.log(emoji.get('exclamation'), chalk.yellow('Anomaly:'), anomaly)
+      console.log('>'.repeat(100))
+      console.log(chalk.bold.bgGreen('TABLE: '), chalk.green.underline(fileName))
+      console.log(chalk.bold.green('INDIVIDUAL'))
+      console.log(getIndiTable(normalizedIndi))
+      console.log(chalk.bold.green('FAMILY'))
+      console.log(getFamiTable(normalizedFami))
+
+      // output errors and anomalies
+      const {errors, anomalies} = validate(indi, fami)
+
+      errors.forEach((error) => {
+        console.log()
+        console.log(emoji.get('x'), chalk.red('Error:'), error)
+      })
+      anomalies.forEach((anomaly) => {
+        console.log()
+        console.log(emoji.get('exclamation'), chalk.yellow('Anomaly:'), anomaly)
+      })
     })
   })
 }

@@ -238,11 +238,31 @@ const birthBeforeMarriageOfParents = (indi, fami) => {
  * @return {Array}
  */
 const birthBeforeDeathOfParents = (indi, fami) => {
-  const errors = []
-  // TODO
-  return errors
-}
-
+  const birthBeforeDeathOfParents = (indi, fami) => {
+    const anomalies = []
+  
+    fami.forEach(({id, hid, wid, cid}) =>  {
+     const wdeath = indi.get(wid).death
+     const cbirth = indi.get(cid).birth
+      
+          
+        if (cbirth < wdeath) {
+          anomalies.push(`US09: Child ${formatDate(cbirth)}  should be born before death  (${formatDate(wdeath)}) of wife(${wid}).`)
+        }
+      const hdeath = indi.get(hid).death
+      const hage = getAge(hdeath)
+      const cbirth = indi.get(cid).birth
+      const cage = getAge(cbirth)
+        
+      if (cage < hage-9) {
+        anomalies.push(`US09: Child ${formatDate(cbirth)}  should be born within 9 months after (${formatDate(hdeath)}) of husband(${hid}).`)
+      }
+     
+    })
+  
+    return anomalies
+  }
+ 
 /**
  * US10: Anomalies
  * Marriage should be at least 14 years after birth of both spouses

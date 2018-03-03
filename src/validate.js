@@ -66,14 +66,14 @@ const birthBeforeMarriage = (indi, fami) => {
 
   fami.forEach(({id, marriage, hid, wid}) => {
     if (marriage) {
-      const hbirth = indi.get(hid).birth
-      const wbirth = indi.get(wid).birth
+      const hBirth = indi.get(hid).birth
+      const wBirth = indi.get(wid).birth
 
-      if (hbirth > marriage) {
-        errors.push(`US02: marriage date(${formatDate(marriage)}) of family(${id}) should not be after birthday(${formatDate(hbirth)}) of husband.`)
+      if (hBirth > marriage) {
+        errors.push(`US02: marriage date(${formatDate(marriage)}) of family(${id}) should not be after birthday(${formatDate(hBirth)}) of husband.`)
       }
-      if (wbirth > marriage) {
-        errors.push(`US02: marriage date(${formatDate(marriage)}) of family(${id}) should not be after birthday(${formatDate(wbirth)}) of wife.`)
+      if (wBirth > marriage) {
+        errors.push(`US02: marriage date(${formatDate(marriage)}) of family(${id}) should not be after birthday(${formatDate(wBirth)}) of wife.`)
       }
     }
   })
@@ -130,14 +130,14 @@ const marriageBeforeDeath = (indi, fami) => {
 
   fami.forEach(({id, marriage, hid, wid}) => {
     if (marriage) {
-      const hdeath = indi.get(hid).death
-      const wdeath = indi.get(wid).death
+      const hDeath = indi.get(hid).death
+      const wDeath = indi.get(wid).death
 
-      if (hdeath && hdeath < marriage) {
-        errors.push(`US05: marriage date(${formatDate(marriage)}) of family(${id}) should not be after death(${formatDate(hdeath)}) of husband.`)
+      if (hDeath && hDeath < marriage) {
+        errors.push(`US05: marriage date(${formatDate(marriage)}) of family(${id}) should not be after death(${formatDate(hDeath)}) of husband.`)
       }
-      if (wdeath && wdeath < marriage) {
-        errors.push(`US05: marriage date(${formatDate(marriage)}) of family(${id}) should not be after death(${formatDate(wdeath)}) of wife.`)
+      if (wDeath && wDeath < marriage) {
+        errors.push(`US05: marriage date(${formatDate(marriage)}) of family(${id}) should not be after death(${formatDate(wDeath)}) of wife.`)
       }
     }
   })
@@ -157,14 +157,14 @@ const divorceBeforeDeath = (indi, fami) => {
 
   fami.forEach(({id, divorce, hid, wid}) => {
     if (divorce) {
-      const hdeath = indi.get(hid).death
-      const wdeath = indi.get(wid).death
+      const hDeath = indi.get(hid).death
+      const wDeath = indi.get(wid).death
 
-      if (hdeath && hdeath < divorce) {
-        errors.push(`US06: divorce date(${formatDate(divorce)}) of family(${id}) should not be after death(${formatDate(hdeath)}) of husband.`)
+      if (hDeath && hDeath < divorce) {
+        errors.push(`US06: divorce date(${formatDate(divorce)}) of family(${id}) should not be after death(${formatDate(hDeath)}) of husband.`)
       }
-      if (wdeath && wdeath < divorce) {
-        errors.push(`US06: divorce date(${formatDate(divorce)}) of family(${id}) should not be after death(${formatDate(wdeath)}) of wife.`)
+      if (wDeath && wDeath < divorce) {
+        errors.push(`US06: divorce date(${formatDate(divorce)}) of family(${id}) should not be after death(${formatDate(wDeath)}) of wife.`)
       }
     }
   })
@@ -208,19 +208,19 @@ const birthBeforeMarriageOfParents = (indi, fami) => {
 
   fami.forEach(({id, marriage, divorce, cids}) => {
     cids.forEach((cid) => {
-      const cbirth = indi.get(cid).birth
-      const cname = indi.get(cid).name
+      const cBirth = indi.get(cid).birth
+      const cName = indi.get(cid).name
 
-      if (marriage < cbirth) {
-        anomalies.push(`US08: birth ${formatDate(cbirth)} of child ${cname}(${cid}) should be after marriage(${formatDate(marriage)}) in family(${id}).`)
+      if (marriage < cBirth) {
+        anomalies.push(`US08: birth ${formatDate(cBirth)} of child ${cName}(${cid}) should be after marriage(${formatDate(marriage)}) in family(${id}).`)
       }
 
       if (divorce) {
         const lastDate = new Date(divorce.getTime())
         lastDate.setMonth(lastDate.getMonth() + 8)
 
-        if (lastDate > cbirth) {
-          anomalies.push(`US08: birth ${formatDate(cbirth)} of child ${cname}(${cid}) should be before 9 months after divorce(${formatDate(divorce)}) in family(${id}).`)
+        if (lastDate > cBirth) {
+          anomalies.push(`US08: birth ${formatDate(cBirth)} of child ${cName}(${cid}) should be before 9 months after divorce(${formatDate(divorce)}) in family(${id}).`)
         }
       }
     })
@@ -240,23 +240,23 @@ const birthBeforeDeathOfParents = (indi, fami) => {
   const errors = []
 
   fami.forEach(({id, hid, wid, cids}) => {
-    const wdeath = indi.get(wid).death
-    const hdeath = indi.get(hid).death
+    const wDeath = indi.get(wid).death
+    const hDeath = indi.get(hid).death
 
     cids.forEach((cid) => {
-      const cbirth = indi.get(cid).birth
-      const cname = indi.get(cid).name
+      const cBirth = indi.get(cid).birth
+      const cName = indi.get(cid).name
 
-      if (wdeath && cbirth > wdeath) {
-        errors.push(`US09: birthday(${formatDate(cbirth)}) of child ${cname}(${cid}) should be before death(${formatDate(wdeath)}) of wife(${wid}).`)
+      if (wDeath && cBirth > wDeath) {
+        errors.push(`US09: birthday(${formatDate(cBirth)}) of child ${cName}(${cid}) should be before death(${formatDate(wDeath)}) of wife(${wid}).`)
       }
 
-      if (hdeath) {
-        const lastDate = new Date(hdeath.getTime())
+      if (hDeath) {
+        const lastDate = new Date(hDeath.getTime())
         lastDate.setMonth(lastDate.getMonth() + 9)
 
-        if (lastDate < cbirth) {
-          errors.push(`US09: birthday(${formatDate(cbirth)}) of child ${cname}(${cid}) should be within 9 months after death(${formatDate(hdeath)}) of husband(${hid}).`)
+        if (lastDate < cBirth) {
+          errors.push(`US09: birthday(${formatDate(cBirth)}) of child ${cName}(${cid}) should be within 9 months after death(${formatDate(hDeath)}) of husband(${hid}).`)
         }
       }
     })
@@ -277,16 +277,16 @@ const marriageAfter14 = (indi, fami) => {
   const anomalies = []
 
   fami.forEach(({id, marriage, hid, wid}) => {
-    const hbirth = indi.get(hid).birth
-    const hage = getAge(hbirth, marriage)
-    if (hage < 14) {
-      anomalies.push(`US10: marriage ${formatDate(marriage)} of family(${id}) should be 14 years after birth(${formatDate(hbirth)}) of husband(${hid}).`)
+    const hBirth = indi.get(hid).birth
+    const hAge = getAge(hBirth, marriage)
+    if (hAge < 14) {
+      anomalies.push(`US10: marriage ${formatDate(marriage)} of family(${id}) should be 14 years after birth(${formatDate(hBirth)}) of husband(${hid}).`)
     }
 
-    const wbirth = indi.get(wid).birth
-    const wage = getAge(wbirth, marriage)
-    if (wage < 14) {
-      anomalies.push(`US10: marriage ${formatDate(marriage)} of family(${id}) should be 14 years after birth(${formatDate(wbirth)}) of husband(${wid}).`)
+    const wBirth = indi.get(wid).birth
+    const wAge = getAge(wBirth, marriage)
+    if (wAge < 14) {
+      anomalies.push(`US10: marriage ${formatDate(marriage)} of family(${id}) should be 14 years after birth(${formatDate(wBirth)}) of husband(${wid}).`)
     }
   })
 
@@ -302,18 +302,18 @@ const marriageAfter14 = (indi, fami) => {
  */
 const noBigamy = (indi, fami) => {
   const anomalies = []
-  const fammap = {}
+  const famMap = {}
 
   fami.forEach(({id, marriage, divorce, wid, hid}) => {
     if (!divorce) {
       divorce = new Date()
     }
 
-    if (!fammap[wid]) {
-      fammap[wid] = []
+    if (!famMap[wid]) {
+      famMap[wid] = []
     }
 
-    fammap[wid].forEach(({id: fid, marriage: marri, divorce: divor}) => {
+    famMap[wid].forEach(({id: fid, marriage: marri, divorce: divor}) => {
       // cannot compare Date directly
       if (marri.getTime() === marriage.getTime()) {
         anomalies.push(`US11: wife(${wid}) marriage(${id}) on ${formatDate(marriage)} cannot have the same date as marriage(${fid}) on ${formatDate(marri)}`)
@@ -328,13 +328,13 @@ const noBigamy = (indi, fami) => {
       }
     })
 
-    fammap[wid].push({id, marriage, divorce})
+    famMap[wid].push({id, marriage, divorce})
 
-    if (!fammap[hid]) {
-      fammap[hid] = []
+    if (!famMap[hid]) {
+      famMap[hid] = []
     }
 
-    fammap[hid].forEach(({id: fid, marriage: marri, divorce: divor}) => {
+    famMap[hid].forEach(({id: fid, marriage: marri, divorce: divor}) => {
       if (marri.getTime() === marriage.getTime()) {
         anomalies.push(`US11: husband(${hid}) marriage(${id}) on ${formatDate(marriage)} cannot have the same date as marriage(${fid}) on ${formatDate(marri)}`)
       } else if (marri < marriage) {
@@ -348,7 +348,7 @@ const noBigamy = (indi, fami) => {
       }
     })
 
-    fammap[hid].push({id, marriage, divorce})
+    famMap[hid].push({id, marriage, divorce})
   })
 
   return anomalies

@@ -12,8 +12,8 @@ class Indi {
    * @param  {string[]} fams  Unique Family ID where the individual is a spouse
    * @return {indi}           Individual instance
    */
-  constructor (id, name, sex, birth, death, famc, fams=[]) {
-    if (!(id && name && sex && birth && (famc || fams.length>0))) {
+  constructor (id, name, sex, birth, death, famc, fams = []) {
+    if (!(id && name && sex && birth && (famc || fams.length > 0))) {
       throw Error(`Individual is invalid.`)
     }
 

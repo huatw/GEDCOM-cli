@@ -1,7 +1,7 @@
 'use strict'
 
 const Fami = require('../../src/models/Fami')
-//id, hid, wid, cids, marriage, divorce,
+// id, hid, wid, cids, marriage, divorce,
 describe('Fami', function () {
   const id = 'fake ID'
   const hid = 'fake hid'
@@ -11,25 +11,15 @@ describe('Fami', function () {
   const divorce = new Date()
 
   it('throws when missing any id, hid, wid, marriage', () => {
-    expect(() => {
-      new Fami()
-    }).toThrow('Family is invalid.')
+    expect(() => new Fami()).toThrow('Family is invalid.')
 
-    expect(() => {
-      new Fami(id)
-    }).toThrow('Family is invalid.')
+    expect(() => new Fami(id)).toThrow('Family is invalid.')
 
-    expect(() => {
-      new Fami(id, hid)
-    }).toThrow('Family is invalid.')
+    expect(() => new Fami(id, hid)).toThrow('Family is invalid.')
 
-    expect(() => {
-      new Fami(id, hid, wid)
-    }).toThrow('Family is invalid.')
+    expect(() => new Fami(id, hid, wid)).toThrow('Family is invalid.')
 
-    expect(() => {
-      new Fami(id, hid, wid, cids)
-    }).toThrow('Family is invalid.')
+    expect(() => new Fami(id, hid, wid, cids)).toThrow('Family is invalid.')
   })
 
   it('set props correctly', () => {

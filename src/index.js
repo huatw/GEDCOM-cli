@@ -22,11 +22,9 @@ program
   .action(function (opt) {
     if (opt.file) {
       runFile(opt.file)
-    }
-    else if (opt.directory) {
+    } else if (opt.directory) {
       runFiles(opt.directory)
-    }
-    else {
+    } else {
       this.help()
     }
   })
@@ -49,6 +47,10 @@ if (!program.args.length) {
 function runFile (fileName) {
   const filePath = path.join(__dirname, '../', fileName)
   fs.stat(filePath, (err, stats) => {
+    if (err) {
+      throw Error(`Error in reading stat of ${filePath}.`)
+    }
+
     if (!stats.isFile()) {
       return
     }
@@ -96,6 +98,10 @@ function runFiles (foldName) {
   const foldPath = path.join(__dirname, '../', foldName)
 
   fs.readdir(foldPath, (err, files) => {
+    if (err) {
+      throw Error(`Error in reading dir ${foldPath}.`)
+    }
+
     files.forEach(fileName => {
       // ignore temporary file when editing
       if (!fileName.startsWith('.')) {

@@ -19,6 +19,11 @@
       ]
     ]
   },
+  "standard": {
+    "envs": [
+      "jest"
+    ]
+  },
   "bin": {
     "gedcom": "bin/gedcom.js"
   },
@@ -26,7 +31,8 @@
     "start": "node bin/gedcom.js",
     "test": "jest",
     "test:watch": "yarn test --watchAll",
-    "test:cov": "yarn test --coverage"
+    "test:cov": "yarn test --coverage",
+    "lint": "standard -v"
   },
   "dependencies": {
     "chalk": "^2.3.0",
@@ -37,6 +43,7 @@
   "devDependencies": {
     "babel-preset-env": "^1.6.1",
     "jest": "^22.2.1",
-    "rewire": "^3.0.2"
+    "rewire": "^3.0.2",
+    "standard": "^11.0.0"
   }
 }

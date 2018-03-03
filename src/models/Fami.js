@@ -11,7 +11,7 @@ class Fami {
    * @param  {Date}     divorce  Divorce date, if appropriate
    * @return {indi}              Family instance
    */
-  constructor (id, hid, wid, cids=[], marriage, divorce) {
+  constructor (id, hid, wid, cids = [], marriage, divorce) {
     if (!(id && hid && wid && marriage)) {
       throw Error(`Family is invalid.`)
     }

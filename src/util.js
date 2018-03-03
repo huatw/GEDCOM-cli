@@ -25,5 +25,5 @@ const flatMap = (arr, fn) =>
 module.exports = {
   formatDate,
   getAge,
-  flatMap,
+  flatMap
 }

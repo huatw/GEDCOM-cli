@@ -12,7 +12,7 @@ const {
  * @param {fami Map} fami
  * @return {object}
  */
-function validate(indi, fami) {
+function validate (indi, fami) {
   const anomalies = flatMap(validateAnomalFns, (fn) => fn(indi, fami))
   const errors = flatMap(validateErrorFns, (fn) => fn(indi, fami))
 
@@ -172,7 +172,6 @@ const divorceBeforeDeath = (indi, fami) => {
   return errors
 }
 
-
 /**
  * US07: Errors
  * Age < 150
@@ -318,14 +317,12 @@ const noBigamy = (indi, fami) => {
       // cannot compare Date directly
       if (marri.getTime() === marriage.getTime()) {
         anomalies.push(`US11: wife(${wid}) marriage(${id}) on ${formatDate(marriage)} cannot have the same date as marriage(${fid}) on ${formatDate(marri)}`)
-      }
-      else if (marri < marriage) {
+      } else if (marri < marriage) {
         if (marriage <= divor) {
           anomalies.push(`US11: wife(${wid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
         }
-      }
-      else {
-        if(marri <= divorce) {
+      } else {
+        if (marri <= divorce) {
           anomalies.push(`US11: wife(${wid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
         }
       }
@@ -334,20 +331,18 @@ const noBigamy = (indi, fami) => {
     fammap[wid].push({id, marriage, divorce})
 
     if (!fammap[hid]) {
-        fammap[hid] = []
+      fammap[hid] = []
     }
 
     fammap[hid].forEach(({id: fid, marriage: marri, divorce: divor}) => {
       if (marri.getTime() === marriage.getTime()) {
         anomalies.push(`US11: husband(${hid}) marriage(${id}) on ${formatDate(marriage)} cannot have the same date as marriage(${fid}) on ${formatDate(marri)}`)
-      }
-      else if (marri < marriage) {
-        if(marriage <= divor) {
+      } else if (marri < marriage) {
+        if (marriage <= divor) {
           anomalies.push(`US11: husband(${hid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
         }
-      }
-      else {
-        if(marri <= divorce) {
+      } else {
+        if (marri <= divorce) {
           anomalies.push(`US11: husband(${hid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
         }
       }
@@ -370,7 +365,7 @@ const noBigamy = (indi, fami) => {
 const parentsNotTooOld = (indi, fami) => {
   const anomalies = []
 
-  fami.forEach(({id, hid, wid, cids}) =>  {
+  fami.forEach(({id, hid, wid, cids}) => {
     const husb = indi.get(hid)
     const wife = indi.get(wid)
 
@@ -561,7 +556,7 @@ const validateErrorFns = [
   marriageBeforeDeath,
   divorceBeforeDeath,
   lessThen150YearsOld,
-  birthBeforeDeathOfParents,
+  birthBeforeDeathOfParents
 ]
 
 const validateAnomalFns = [
@@ -580,7 +575,7 @@ const validateAnomalFns = [
   correctGenderForRole,
   uniqueNameAndBirthDate,
   uniqueFamiliesBySpouses,
-  uniqueFirstNamesInFamilies,
+  uniqueFirstNamesInFamilies
 ]
 
 module.exports = validate

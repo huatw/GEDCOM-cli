@@ -33,57 +33,46 @@ const parseIndi = (lines) => {
   const fams = []
   let name, sex, birth, death, famc
 
-  for (let i=1; i<lines.length; i++) {
+  for (let i = 1; i < lines.length; i++) {
     const {level, tag, arg} = lines[i]
     if (level === 1 && tag === 'NAME') {
       if (!name) {
         name = arg
-      }
-      else {
+      } else {
         throw Error(`NAME cannot be assigned multiple times: ${level} ${tag} ${arg}`)
       }
-    }
-    else if (level === 1 && tag === 'SEX') {
+    } else if (level === 1 && tag === 'SEX') {
       if (!sex) {
         if (!SEXES.has(arg)) {
           throw Error(`SEX should only be M or F: ${level} ${tag} ${arg}`)
         }
         sex = arg
-      }
-      else {
+      } else {
         throw Error(`SEX cannot be assigned multiple times: ${level} ${tag} ${arg}`)
       }
-    }
-    else if (level === 1 && tag === 'BIRT') {
+    } else if (level === 1 && tag === 'BIRT') {
       if (!birth) {
         i += 1
         birth = parseDate(lines[i])
-      }
-      else {
+      } else {
         throw Error(`BIRT cannot be assigned multiple times: ${level} ${tag} ${arg}`)
       }
-    }
-    else if (level === 1 && tag === 'DEAT') {
+    } else if (level === 1 && tag === 'DEAT') {
       if (!death) {
         i += 1
         death = parseDate(lines[i])
-      }
-      else {
+      } else {
         throw Error(`DEAT cannot be assigned multiple times: ${level} ${tag} ${arg}`)
       }
-    }
-    else if (level === 1 && tag === 'FAMC') {
+    } else if (level === 1 && tag === 'FAMC') {
       if (!famc) {
         famc = arg
-      }
-      else {
+      } else {
         throw Error(`FAMC cannot be assigned multiple times: ${level} ${tag} ${arg}`)
       }
-    }
-    else if (level === 1 && tag === 'FAMS') {
+    } else if (level === 1 && tag === 'FAMS') {
       fams.push(arg)
-    }
-    else {
+    } else {
       throw Error(`Tag is not supported: ${tag}`)
     }
   }
@@ -101,46 +90,37 @@ const parseFami = (lines) => {
   const cids = []
   let hid, wid, marriage, divorce
 
-  for (let i=1; i<lines.length; i++) {
+  for (let i = 1; i < lines.length; i++) {
     const {level, tag, arg} = lines[i]
     if (level === 1 && tag === 'MARR') {
       if (!marriage) {
         i += 1
         marriage = parseDate(lines[i])
-      }
-      else {
+      } else {
         throw Error(`MARR cannot be assigned multiple times: ${level} ${tag} ${arg}`)
       }
-    }
-    else if (level === 1 && tag === 'HUSB') {
+    } else if (level === 1 && tag === 'HUSB') {
       if (!hid) {
         hid = arg
-      }
-      else {
+      } else {
         throw Error(`HUSB cannot be assigned multiple times: ${level} ${tag} ${arg}`)
       }
-    }
-    else if (level === 1 && tag === 'WIFE') {
+    } else if (level === 1 && tag === 'WIFE') {
       if (!wid) {
         wid = arg
-      }
-      else {
+      } else {
         throw Error(`WIFE cannot be assigned multiple times: ${level} ${tag} ${arg}`)
       }
-    }
-    else if (level === 1 && tag === 'CHIL') {
+    } else if (level === 1 && tag === 'CHIL') {
       cids.push(arg)
-    }
-    else if (level === 1 && tag === 'DIV') {
+    } else if (level === 1 && tag === 'DIV') {
       if (!divorce) {
         i += 1
         divorce = parseDate(lines[i])
-      }
-      else {
+      } else {
         throw Error(`DIV cannot be assigned multiple times: ${level} ${tag} ${arg}`)
       }
-    }
-    else {
+    } else {
       throw Error(`Tag is not supported: ${tag}`)
     }
   }
@@ -189,16 +169,15 @@ const filterTag = (line) => {
 const groupLevel0 = (acc, line) => {
   if (line.level === 0) {
     acc.push([line])
-  }
-  else {
-    acc[acc.length-1].push(line)
+  } else {
+    acc[acc.length - 1].push(line)
   }
   return acc
 }
 
 const TYPE_GEN_FNS = new Map([
   ['INDI', parseIndi],
-  ['FAM', parseFami],
+  ['FAM', parseFami]
 ])
 
 /**
@@ -227,8 +206,7 @@ const groupByType = (acc, obj) => {
     }
     acc.fami.set(obj.id, obj)
     return acc
-  }
-  else if (obj instanceof Indi) {
+  } else if (obj instanceof Indi) {
     if (acc.indi.has(obj.id)) {
       throw Error(`Duplicated individual: ${obj}`)
     }

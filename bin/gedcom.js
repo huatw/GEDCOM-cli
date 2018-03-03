@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-const gedcom = require('../src/index')
+const gedcom = require('../src/index') // eslint-disable-line

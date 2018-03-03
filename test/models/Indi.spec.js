@@ -4,7 +4,7 @@ const Indi = require('../../src/models/Indi')
 
 describe('Indi', function () {
   const id = 'fake ID'
-  const name =  'fake name'
+  const name = 'fake name'
   const sex = 'M'
   const birth = new Date()
   const death = new Date()
@@ -12,25 +12,15 @@ describe('Indi', function () {
   const fams = ['fake fams ID']
 
   it('throws when missing any id, name, sex, birth, or both famc, fams', () => {
-    expect(() => {
-      new Indi()
-    }).toThrow('Individual is invalid.')
+    expect(() => new Indi()).toThrow('Individual is invalid.')
 
-    expect(() => {
-      new Indi(id)
-    }).toThrow('Individual is invalid.')
+    expect(() => new Indi(id)).toThrow('Individual is invalid.')
 
-    expect(() => {
-      new Indi(id, name)
-    }).toThrow('Individual is invalid.')
+    expect(() => new Indi(id, name)).toThrow('Individual is invalid.')
 
-    expect(() => {
-      new Indi(id, name, sex)
-    }).toThrow('Individual is invalid.')
+    expect(() => new Indi(id, name, sex)).toThrow('Individual is invalid.')
 
-    expect(() => {
-      new Indi(id, name, sex, birth)
-    }).toThrow('Individual is invalid.')
+    expect(() => new Indi(id, name, sex, birth)).toThrow('Individual is invalid.')
   })
 
   it('set props correctly', () => {

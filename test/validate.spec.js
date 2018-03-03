@@ -9,28 +9,37 @@ const Fami = require('../src/models/Fami')
 const validate = require('../src/validate')
 const _validate = rewire('../src/validate')
 
+const wrongDate = new Date(2222, 1, 1)
+
+const id = 'fake id'
+const name = 'fake name'
+const sex = 'M'
+const birth = new Date(1970, 1, 1)
+const death = new Date(2015, 1, 1)
+const famc = 'fake famc'
+const fams = []
+
+const fid = 'fake fid'
+const hid = 'fake hid'
+const wid = 'fake wid'
+const marriage = new Date(1990, 1, 1)
+const divorce = new Date(1995, 1, 1)
+
 describe('validate', function () {
-  //TODO
+  it('returns object with no error and anomaly', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(validate(indi, fami)).toEqual({
+      errors: [],
+      anomalies: []
+    })
+  })
+  // TODO
 })
 
 describe('US01: datesBeforeCurrentDate', function () {
   const datesBeforeCurrentDate = _validate.__get__('datesBeforeCurrentDate')
-
-  const wrongDate = new Date(2222, 1, 1)
-
-  const id = 'fake id'
-  const name = 'fake name'
-  const sex = 'M'
-  const birth = new Date(1970, 1, 1)
-  const death = new Date(2015, 1, 1)
-  const famc = 'fake famc'
-  const fams = []
-
-  const fid = 'fake fid'
-  const hid = 'fake hid'
-  const wid = 'fake wid'
-  const marriage = new Date(1990, 1, 1)
-  const divorce = new Date(1995, 1, 1)
 
   it('returns empty error array', () => {
     const indi = new Map()
@@ -87,22 +96,6 @@ describe('US01: datesBeforeCurrentDate', function () {
 describe('US02: birthBeforeMarriage', function () {
   const birthBeforeMarriage = _validate.__get__('birthBeforeMarriage')
 
-  const wrongDate = new Date(2222, 1, 1)
-
-  const id = 'fake id'
-  const name = 'fake name'
-  const sex = 'M'
-  const birth = new Date(1970, 1, 1)
-  const death = new Date(2015, 1, 1)
-  const famc = 'fake famc'
-  const fams = []
-
-  const fid = 'fake fid'
-  const hid = 'fake hid'
-  const wid = 'fake wid'
-  const marriage = new Date(1990, 1, 1)
-  const divorce = new Date(1995, 1, 1)
-
   it('returns empty error array', () => {
     const indi = new Map()
     const fami = new Map()
@@ -142,16 +135,6 @@ describe('US02: birthBeforeMarriage', function () {
 describe('US03: birthBeforeDeath', function () {
   const birthBeforeDeath = _validate.__get__('birthBeforeDeath')
 
-  const wrongDate = new Date(2222, 1, 1)
-
-  const id = 'fake id'
-  const name = 'fake name'
-  const sex = 'M'
-  const birth = new Date(1970, 1, 1)
-  const death = new Date(2015, 1, 1)
-  const famc = 'fake famc'
-  const fams = []
-
   it('returns empty error array', () => {
     const indi = new Map()
 
@@ -179,14 +162,6 @@ describe('US03: birthBeforeDeath', function () {
 
 describe('US04: marriageBeforeDivorce', function () {
   const marriageBeforeDivorce = _validate.__get__('marriageBeforeDivorce')
-
-  const wrongDate = new Date(2222, 1, 1)
-
-  const fid = 'fake fid'
-  const hid = 'fake hid'
-  const wid = 'fake wid'
-  const marriage = new Date(1990, 1, 1)
-  const divorce = new Date(1995, 1, 1)
 
   it('returns empty error array', () => {
     const indi = new Map()
@@ -217,18 +192,9 @@ describe('US04: marriageBeforeDivorce', function () {
 describe('US05: marriageBeforeDeath', function () {
   const marriageBeforeDeath = _validate.__get__('marriageBeforeDeath')
 
-  const id = 'fake id'
-  const name = 'fake name'
-  const sex = 'M'
-  const birth = new Date(1970, 1, 1)
   const hdeath = new Date(2015, 1, 1)
   const wdeath = new Date(2015, 1, 1)
-  const famc = 'fake famc'
-  const fams = []
 
-  const fid = 'fake fid'
-  const hid = 'fake hid'
-  const wid = 'fake wid'
   const marriage = new Date(2222, 1, 1)
 
   it('returns empty error array', () => {
@@ -271,18 +237,8 @@ describe('US05: marriageBeforeDeath', function () {
 describe('US06: divorceBeforeDeath', function () {
   const divorceBeforeDeath = _validate.__get__('divorceBeforeDeath')
 
-  const id = 'fake id'
-  const name = 'fake name'
-  const sex = 'M'
-  const birth = new Date(1970, 1, 1)
   const hdeath = new Date(2015, 1, 1)
   const wdeath = new Date(2015, 1, 1)
-  const famc = 'fake famc'
-  const fams = []
-
-  const fid = 'fake fid'
-  const hid = 'fake hid'
-  const wid = 'fake wid'
   const marriage = new Date(2014, 1, 1)
   const divorce = new Date(2222, 1, 1)
 

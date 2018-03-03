@@ -56,7 +56,7 @@ describe('parse', function () {
         [hid, new Indi(hid, hname, sexM, new Date(hbirth), new Date(hdeath), undefined, [fid])],
         [wid, new Indi(wid, wname, sexF, new Date(wbirth), undefined, undefined, [fid])],
         [cid1, new Indi(cid1, cname1, sexM, new Date(cbirth1), undefined, fid)],
-        [cid2, new Indi(cid2, cname2, sexF, new Date(cbirth2), undefined, fid)],
+        [cid2, new Indi(cid2, cname2, sexF, new Date(cbirth2), undefined, fid)]
       ]),
       fami: new Map([
         [fid, new Fami(fid, hid, wid, cids, new Date(marriage))]
@@ -229,7 +229,7 @@ describe('normalize', function () {
       [iids[1], indi2],
       [iids[0], indi1],
       [iids[3], indi4],
-      [iids[2], indi3],
+      [iids[2], indi3]
     ])
 
     const fids = ['fid1', 'fid2', 'fid3', 'fid4']
@@ -245,7 +245,7 @@ describe('normalize', function () {
       [fids[1], fami2],
       [fids[0], fami1],
       [fids[3], fami4],
-      [fids[2], fami3],
+      [fids[2], fami3]
     ])
 
     expect(normalize({indi, fami})).toEqual({
@@ -259,7 +259,6 @@ describe('normalize', function () {
     const hname = 'fake hname'
     const wid = 'fake wid'
     const wname = 'fake wname'
-
 
     const husband = new Indi(hid, hname, sex, birth, death, famc, fams)
     const wife = new Indi(wid, wname, sex, birth, death, famc, fams)

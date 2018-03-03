@@ -8,19 +8,12 @@ describe('Line', function () {
   const arg = 'whatever'
 
   it('throws when missing level or tag', () => {
-    expect(() => {
-      new Line()
-    }).toThrow('Line is invalid.')
-
-    expect(() => {
-      new Line(level)
-    }).toThrow('Line is invalid.')
+    expect(() => new Line()).toThrow('Line is invalid.')
+    expect(() => new Line(level)).toThrow('Line is invalid.')
   })
 
   it('throws when level is not number', () => {
-    expect(() => {
-      new Line('1', tag)
-    }).toThrow('Line is invalid.')
+    expect(() => new Line('1', tag)).toThrow('Line is invalid.')
   })
 
   it('set props correctly', () => {

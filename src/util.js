@@ -15,12 +15,25 @@ const getAge = (birth, death = new Date()) => {
 
 /**
  * naive implementation of flatMap
- * @param  {Array}   arr
+ * @param  {Iterable}   iterable
  * @param  {Function} fn
  * @return {Array}
  */
-const flatMap = (arr, fn) =>
-  arr.reduce((acc, v, k) => [...acc, ...fn(v, k, arr)], [])
+const flatMap = (iterable, fn) => {
+  const result = []
+
+  for (const [k, v] of iterable.entries()) {
+    const ret = fn(v, k, iterable)
+
+    if (Array.isArray(ret)) {
+      result.push(...ret)
+    } else {
+      result.push(ret)
+    }
+  }
+
+  return result
+}
 
 module.exports = {
   formatDate,

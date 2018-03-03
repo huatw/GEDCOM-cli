@@ -2,7 +2,10 @@
 
 const rewire = require('rewire')
 
-const {formatDate} = require('../src/util')
+const {
+  formatDate,
+  getAge
+} = require('../src/util')
 const Indi = require('../src/models/Indi')
 const Fami = require('../src/models/Fami')
 
@@ -10,6 +13,7 @@ const validate = require('../src/validate')
 const _validate = rewire('../src/validate')
 
 const wrongDate = new Date(2222, 1, 1)
+const earlyDate = new Date(1700, 1, 1)
 
 const id = 'fake id'
 const name = 'fake name'
@@ -18,6 +22,7 @@ const birth = new Date(1970, 1, 1)
 const death = new Date(2015, 1, 1)
 const famc = 'fake famc'
 const fams = []
+const cBirth = new Date(1992, 1, 1)
 
 const fid = 'fake fid'
 const hid = 'fake hid'
@@ -279,13 +284,68 @@ describe('US06: divorceBeforeDeath', function () {
   })
 })
 
+describe('US07: lessThen150YearsOld', function () {
+  const lessThen150YearsOld = _validate.__get__('lessThen150YearsOld')
+
+  it('returns empty error array', () => {
+    const indi = new Map()
+
+    expect(lessThen150YearsOld(indi)).toEqual([])
+  })
+
+  it('returns array with only one age error', () => {
+    const age = getAge(earlyDate)
+
+    const indi = new Map([
+      [id, new Indi(id, name, sex, earlyDate, undefined, famc, fams)]
+    ])
+
+    expect(lessThen150YearsOld(indi)).toEqual([
+      `US07: age ${age} of ${name}(${id}) should not be more than 150.`
+    ])
+  })
+})
+
+describe('US08: birthBeforeMarriageOfParents', function () {
+  const birthBeforeMarriageOfParents = _validate.__get__('birthBeforeMarriageOfParents')
+
+  it('returns empty error array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(birthBeforeMarriageOfParents(indi, fami)).toEqual([])
+  })
+
+  it('returns array with only one error: child born before marriage', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, earlyDate, undefined, famc, fams)]
+    ])
+
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [id], marriage)]
+    ])
+
+    expect(birthBeforeMarriageOfParents(indi, fami)).toEqual([
+      `US08: birth ${formatDate(earlyDate)} of child ${name}(${id}) should be after marriage(${formatDate(marriage)}) in family(${fid}).`
+    ])
+  })
+
+  it('returns array with only one error: child born after divorce', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, cBirth, undefined, famc, fams)]
+    ])
+
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [id], marriage, earlyDate)]
+    ])
+
+    expect(birthBeforeMarriageOfParents(indi, fami)).toEqual([
+      `US08: birth ${formatDate(cBirth)} of child ${name}(${id}) should be before 9 months after divorce(${formatDate(earlyDate)}) in family(${fid}).`
+    ])
+  })
+})
+
 // TODO
-// describe('US07: lessThen150YearsOld', function () {
-//   const lessThen150YearsOld = _validate.__get__('lessThen150YearsOld')
-// })
-// describe('US08: birthBeforeMarriageOfParents', function () {
-//   const birthBeforeMarriageOfParents = _validate.__get__('birthBeforeMarriageOfParents')
-// })
 // describe('US09: birthBeforeDeathOfParents', function () {
 //   const birthBeforeDeathOfParents = _validate.__get__('birthBeforeDeathOfParents')
 // })

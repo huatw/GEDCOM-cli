@@ -30,29 +30,33 @@ function validate (indi, fami) {
  * @param {fami Map} fami
  * @return {Array}
  */
-const datesBeforeCurrentDate = (indi, fami) => {
-  const errors = []
+const datesBeforeCurrentDate = (indi, fami) => ([
+  ...flatMap(indi, ({id, name, birth, death}) => {
+    const errors = []
 
-  indi.forEach(({id, name, birth, death}) => {
     if (birth > Date.now()) {
       errors.push(`US01: birthday(${formatDate(birth)}) of ${name}(${id}) should not be after current date.`)
     }
     if (death && death > Date.now()) {
       errors.push(`US01: death(${formatDate(death)}) of ${name}(${id}) should not be after current date.`)
     }
-  })
 
-  fami.forEach(({id, marriage, divorce}) => {
+    return errors
+  }),
+
+  ...flatMap(fami, ({id, marriage, divorce}) => {
+    const errors = []
+
     if (marriage > Date.now()) {
       errors.push(`US01: marriage date(${formatDate(marriage)}) of family(${id}) should not be after current date.`)
     }
     if (divorce && divorce > Date.now()) {
       errors.push(`US01: divorce date(${formatDate(divorce)}) of family(${id}) should not be after current date.`)
     }
-  })
 
-  return errors
-}
+    return errors
+  })
+])
 
 /**
  * US02: Errors
@@ -61,10 +65,10 @@ const datesBeforeCurrentDate = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const birthBeforeMarriage = (indi, fami) => {
-  const errors = []
+const birthBeforeMarriage = (indi, fami) =>
+  flatMap(fami, ({id, marriage, hid, wid}) => {
+    const errors = []
 
-  fami.forEach(({id, marriage, hid, wid}) => {
     if (marriage) {
       const hBirth = indi.get(hid).birth
       const wBirth = indi.get(wid).birth
@@ -76,10 +80,9 @@ const birthBeforeMarriage = (indi, fami) => {
         errors.push(`US02: marriage date(${formatDate(marriage)}) of family(${id}) should not be after birthday(${formatDate(wBirth)}) of wife.`)
       }
     }
-  })
 
-  return errors
-}
+    return errors
+  })
 
 /**
  * US03: Errors
@@ -181,19 +184,14 @@ const divorceBeforeDeath = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const lessThen150YearsOld = (indi) => {
-  const errors = []
-
-  indi.forEach(({id, name, birth, death}) => {
+const lessThen150YearsOld = (indi) =>
+  flatMap(indi, ({id, name, birth, death}) => {
     const age = getAge(birth, death)
 
-    if (age > 0 && age > 150) {
-      errors.push(`US07: age ${age} of ${name}(${id}) should not be more than 150.`)
-    }
+    return age > 0 && age > 150
+      ? [`US07: age ${age} of ${name}(${id}) should not be more than 150.`]
+      : []
   })
-
-  return errors
-}
 
 /**
  * US08: Anomalies
@@ -203,15 +201,15 @@ const lessThen150YearsOld = (indi) => {
  * @param {fami Map} fami
  * @return {Array}
  : */
-const birthBeforeMarriageOfParents = (indi, fami) => {
-  const anomalies = []
+const birthBeforeMarriageOfParents = (indi, fami) =>
+  flatMap(fami, ({id, marriage, divorce, cids}) =>
+    flatMap(cids, (cid) => {
+      const anomalies = []
 
-  fami.forEach(({id, marriage, divorce, cids}) => {
-    cids.forEach((cid) => {
       const cBirth = indi.get(cid).birth
       const cName = indi.get(cid).name
 
-      if (marriage < cBirth) {
+      if (marriage > cBirth) {
         anomalies.push(`US08: birth ${formatDate(cBirth)} of child ${cName}(${cid}) should be after marriage(${formatDate(marriage)}) in family(${id}).`)
       }
 
@@ -219,15 +217,14 @@ const birthBeforeMarriageOfParents = (indi, fami) => {
         const lastDate = new Date(divorce.getTime())
         lastDate.setMonth(lastDate.getMonth() + 8)
 
-        if (lastDate > cBirth) {
+        if (lastDate < cBirth) {
           anomalies.push(`US08: birth ${formatDate(cBirth)} of child ${cName}(${cid}) should be before 9 months after divorce(${formatDate(divorce)}) in family(${id}).`)
         }
       }
-    })
-  })
 
-  return anomalies
-}
+      return anomalies
+    })
+  )
 
 /**
  * US09: Errors

@@ -13,8 +13,8 @@ const {
  * @return {object}
  */
 function validate (indi, fami) {
-  const anomalies = flatMap(validateAnomalFns, (fn) => fn(indi, fami))
-  const errors = flatMap(validateErrorFns, (fn) => fn(indi, fami))
+  const anomalies = flatMap(validateAnomalFns, (fn) => fn({indi, fami}))
+  const errors = flatMap(validateErrorFns, (fn) => fn({indi, fami}))
 
   return {
     errors,
@@ -30,7 +30,7 @@ function validate (indi, fami) {
  * @param {fami Map} fami
  * @return {Array}
  */
-const datesBeforeCurrentDate = (indi, fami) => ([
+const datesBeforeCurrentDate = ({indi, fami}) => ([
   ...flatMap(indi, ({id, name, birth, death}) => {
     const errors = []
 
@@ -65,7 +65,7 @@ const datesBeforeCurrentDate = (indi, fami) => ([
  * @param {fami Map} fami
  * @return {Array}
  */
-const birthBeforeMarriage = (indi, fami) =>
+const birthBeforeMarriage = ({indi, fami}) =>
   flatMap(fami, ({id, marriage, hid, wid}) => {
     const errors = []
 
@@ -90,7 +90,7 @@ const birthBeforeMarriage = (indi, fami) =>
  * @param {indi Map} indi
  * @return {Array}
  */
-const birthBeforeDeath = (indi) => {
+const birthBeforeDeath = ({indi}) => {
   const errors = []
 
   indi.forEach(({id, name, birth, death}) => {
@@ -109,7 +109,7 @@ const birthBeforeDeath = (indi) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const marriageBeforeDivorce = (indi, fami) => {
+const marriageBeforeDivorce = ({indi, fami}) => {
   const errors = []
 
   fami.forEach(({id, marriage, divorce}) => {
@@ -128,7 +128,7 @@ const marriageBeforeDivorce = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const marriageBeforeDeath = (indi, fami) => {
+const marriageBeforeDeath = ({indi, fami}) => {
   const errors = []
 
   fami.forEach(({id, marriage, hid, wid}) => {
@@ -155,7 +155,7 @@ const marriageBeforeDeath = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const divorceBeforeDeath = (indi, fami) => {
+const divorceBeforeDeath = ({indi, fami}) => {
   const errors = []
 
   fami.forEach(({id, divorce, hid, wid}) => {
@@ -184,7 +184,7 @@ const divorceBeforeDeath = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const lessThen150YearsOld = (indi) =>
+const lessThen150YearsOld = ({indi}) =>
   flatMap(indi, ({id, name, birth, death}) => {
     const age = getAge(birth, death)
 
@@ -201,7 +201,7 @@ const lessThen150YearsOld = (indi) =>
  * @param {fami Map} fami
  * @return {Array}
  : */
-const birthBeforeMarriageOfParents = (indi, fami) =>
+const birthBeforeMarriageOfParents = ({indi, fami}) =>
   flatMap(fami, ({id, marriage, divorce, cids}) =>
     flatMap(cids, (cid) => {
       const anomalies = []
@@ -233,7 +233,7 @@ const birthBeforeMarriageOfParents = (indi, fami) =>
  * @param {fami Map} fami
  * @return {Array}
  */
-const birthBeforeDeathOfParents = (indi, fami) => {
+const birthBeforeDeathOfParents = ({indi, fami}) => {
   const errors = []
 
   fami.forEach(({id, hid, wid, cids}) => {
@@ -270,7 +270,7 @@ const birthBeforeDeathOfParents = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const marriageAfter14 = (indi, fami) => {
+const marriageAfter14 = ({indi, fami}) => {
   const anomalies = []
 
   fami.forEach(({id, marriage, hid, wid}) => {
@@ -297,7 +297,7 @@ const marriageAfter14 = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const noBigamy = (fami) => {
+const noBigamy = ({fami}) => {
   const anomalies = []
   const famMap = {}
 
@@ -346,7 +346,7 @@ const noBigamy = (fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const parentsNotTooOld = (indi, fami) => {
+const parentsNotTooOld = ({indi, fami}) => {
   const anomalies = []
 
   fami.forEach(({id, hid, wid, cids}) => {

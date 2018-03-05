@@ -12,7 +12,7 @@ const Fami = require('../src/models/Fami')
 const validate = require('../src/validate')
 const _validate = rewire('../src/validate')
 
-const wrongDate = new Date(2222, 1, 1)
+const lateDate = new Date(2222, 1, 1)
 const earlyDate = new Date(1700, 1, 1)
 
 const id = 'fake id'
@@ -58,45 +58,45 @@ describe('US01: datesBeforeCurrentDate', function () {
 
   it('returns array with only one birthday error', () => {
     const indi = new Map([
-      [id, new Indi(id, name, sex, wrongDate, death, famc, fams)]
+      [id, new Indi(id, name, sex, lateDate, death, famc, fams)]
     ])
     const fami = new Map()
 
     expect(datesBeforeCurrentDate({indi, fami})).toEqual([
-      `US01: birthday(${formatDate(wrongDate)}) of ${name}(${id}) should not be after current date.`
+      `US01: birthday(${formatDate(lateDate)}) of ${name}(${id}) should not be after current date.`
     ])
   })
 
   it('returns array with only one death error', () => {
     const indi = new Map([
-      [id, new Indi(id, name, sex, birth, wrongDate, famc, fams)]
+      [id, new Indi(id, name, sex, birth, lateDate, famc, fams)]
     ])
     const fami = new Map()
 
     expect(datesBeforeCurrentDate({indi, fami})).toEqual([
-      `US01: death(${formatDate(wrongDate)}) of ${name}(${id}) should not be after current date.`
+      `US01: death(${formatDate(lateDate)}) of ${name}(${id}) should not be after current date.`
     ])
   })
 
   it('returns array with only one marriage date error', () => {
     const indi = new Map()
     const fami = new Map([
-      [fid, new Fami(fid, hid, wid, [], wrongDate)]
+      [fid, new Fami(fid, hid, wid, [], lateDate)]
     ])
 
     expect(datesBeforeCurrentDate({indi, fami})).toEqual([
-      `US01: marriage date(${formatDate(wrongDate)}) of family(${fid}) should not be after current date.`
+      `US01: marriage date(${formatDate(lateDate)}) of family(${fid}) should not be after current date.`
     ])
   })
 
   it('returns array with only one divorce date error', () => {
     const indi = new Map()
     const fami = new Map([
-      [fid, new Fami(fid, hid, wid, [], marriage, wrongDate)]
+      [fid, new Fami(fid, hid, wid, [], marriage, lateDate)]
     ])
 
     expect(datesBeforeCurrentDate({indi, fami})).toEqual([
-      `US01: divorce date(${formatDate(wrongDate)}) of family(${fid}) should not be after current date.`
+      `US01: divorce date(${formatDate(lateDate)}) of family(${fid}) should not be after current date.`
     ])
   })
 })
@@ -113,7 +113,7 @@ describe('US02: birthBeforeMarriage', function () {
 
   it('returns array with only one huaband birthday after marriage error', () => {
     const indi = new Map([
-      [hid, new Indi(hid, name, sex, wrongDate, undefined, famc, fams)],
+      [hid, new Indi(hid, name, sex, lateDate, undefined, famc, fams)],
       [wid, new Indi(wid, name, sex, birth, undefined, famc, fams)]
     ])
     const fami = new Map([
@@ -121,21 +121,21 @@ describe('US02: birthBeforeMarriage', function () {
     ])
 
     expect(birthBeforeMarriage({indi, fami})).toEqual([
-      `US02: marriage date(${formatDate(marriage)}) of family(${fid}) should not be after birthday(${formatDate(wrongDate)}) of husband.`
+      `US02: marriage date(${formatDate(marriage)}) of family(${fid}) should not be after birthday(${formatDate(lateDate)}) of husband.`
     ])
   })
 
   it('returns array with only one wife birthday after marriage error', () => {
     const indi = new Map([
       [hid, new Indi(hid, name, sex, birth, undefined, famc, fams)],
-      [wid, new Indi(wid, name, sex, wrongDate, undefined, famc, fams)]
+      [wid, new Indi(wid, name, sex, lateDate, undefined, famc, fams)]
     ])
     const fami = new Map([
       [fid, new Fami(fid, hid, wid, [], marriage)]
     ])
 
     expect(birthBeforeMarriage({indi, fami})).toEqual([
-      `US02: marriage date(${formatDate(marriage)}) of family(${fid}) should not be after birthday(${formatDate(wrongDate)}) of wife.`
+      `US02: marriage date(${formatDate(marriage)}) of family(${fid}) should not be after birthday(${formatDate(lateDate)}) of wife.`
     ])
   })
 })
@@ -159,11 +159,11 @@ describe('US03: birthBeforeDeath', function () {
 
   it('returns array with only one birth before death error', () => {
     const indi = new Map([
-      [id, new Indi(id, name, sex, wrongDate, death, famc, fams)]
+      [id, new Indi(id, name, sex, lateDate, death, famc, fams)]
     ])
 
     expect(birthBeforeDeath({indi})).toEqual([
-      `US03: death(${formatDate(death)}) of ${name}(${id}) should not be after birthday(${formatDate(wrongDate)}).`
+      `US03: death(${formatDate(death)}) of ${name}(${id}) should not be after birthday(${formatDate(lateDate)}).`
     ])
   })
 })
@@ -188,11 +188,11 @@ describe('US04: marriageBeforeDivorce', function () {
 
   it('returns array with only one marriage after divorce error', () => {
     const fami = new Map([
-      [fid, new Fami(fid, hid, wid, [], wrongDate, divorce)]
+      [fid, new Fami(fid, hid, wid, [], lateDate, divorce)]
     ])
 
     expect(marriageBeforeDivorce({fami})).toEqual([
-      `US04: marriage date(${formatDate(wrongDate)}) of family(${fid}) should not be after divorce(${formatDate(divorce)}).`
+      `US04: marriage date(${formatDate(lateDate)}) of family(${fid}) should not be after divorce(${formatDate(divorce)}).`
     ])
   })
 })
@@ -348,13 +348,90 @@ describe('US08: birthBeforeMarriageOfParents', function () {
   })
 })
 
-// TODO
-// describe('US09: birthBeforeDeathOfParents', function () {
-//   const birthBeforeDeathOfParents = _validate.__get__('birthBeforeDeathOfParents')
-// })
-// describe('US10: marriageAfter14', function () {
-//   const marriageAfter14 = _validate.__get__('marriageAfter14')
-// })
+describe('US09: birthBeforeDeathOfParents', function () {
+  const birthBeforeDeathOfParents = _validate.__get__('birthBeforeDeathOfParents')
+
+  it('returns empty error array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(birthBeforeDeathOfParents({indi, fami})).toEqual([])
+  })
+
+  it('returns array with only one error: child born after death of mother', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, lateDate, undefined, famc, fams)],
+      [wid, new Indi(wid, name, sex, birth, death, famc, fams)],
+      [hid, new Indi(hid, name, sex, birth, undefined, famc, fams)]
+    ])
+
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [id], marriage)]
+    ])
+
+    expect(birthBeforeDeathOfParents({indi, fami})).toEqual([
+      `US09: birthday(${formatDate(lateDate)}) of child ${name}(${id}) should be before death(${formatDate(death)}) of wife(${wid}).`
+    ])
+  })
+
+  it('returns array with only one error: child born after 9 months after death of father', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, lateDate, undefined, famc, fams)],
+      [wid, new Indi(wid, name, sex, birth, undefined, famc, fams)],
+      [hid, new Indi(hid, name, sex, birth, death, famc, fams)]
+    ])
+
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [id], marriage)]
+    ])
+
+    expect(birthBeforeDeathOfParents({indi, fami})).toEqual([
+      `US09: birthday(${formatDate(lateDate)}) of child ${name}(${id}) should be within 9 months after death(${formatDate(death)}) of husband(${hid}).`
+    ])
+  })
+})
+
+describe('US10: marriageAfter14', function () {
+  const marriageAfter14 = _validate.__get__('marriageAfter14')
+
+  it('returns empty anomaly array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(marriageAfter14({indi, fami})).toEqual([])
+  })
+
+  it('returns array with only one anomaly: wife younger than 14', () => {
+    const indi = new Map([
+      [wid, new Indi(wid, name, sex, lateDate, undefined, famc, fams)],
+      [hid, new Indi(hid, name, sex, birth, undefined, famc, fams)]
+    ])
+
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [], marriage)]
+    ])
+
+    expect(marriageAfter14({indi, fami})).toEqual([
+      `US10: marriage ${formatDate(marriage)} of family(${fid}) should be 14 years after birth(${formatDate(lateDate)}) of husband(${wid}).`
+    ])
+  })
+
+  it('returns array with only one anomaly: husband younger than 14', () => {
+    const indi = new Map([
+      [wid, new Indi(wid, name, sex, birth, undefined, famc, fams)],
+      [hid, new Indi(hid, name, sex, lateDate, undefined, famc, fams)]
+    ])
+
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [], marriage)]
+    ])
+
+    expect(marriageAfter14({indi, fami})).toEqual([
+      `US10: marriage ${formatDate(marriage)} of family(${fid}) should be 14 years after birth(${formatDate(lateDate)}) of husband(${hid}).`
+    ])
+  })
+})
+
 describe('US11: noBigamy', function () {
   const noBigamy = _validate.__get__('noBigamy')
 
@@ -423,6 +500,7 @@ describe('US12: parentsNotTooOld', function () {
   })
 })
 
+// TODO
 // describe('US13: siblingsSpacing', function () {
 //   const siblingsSpacing = _validate.__get__('siblingsSpacing')
 // })

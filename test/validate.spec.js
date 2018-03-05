@@ -25,8 +25,11 @@ const fams = []
 const cBirth = new Date(1992, 1, 1)
 
 const fid = 'fake fid'
+const fid2 = 'fake fid2'
 const hid = 'fake hid'
+const hid2 = 'fake hid2'
 const wid = 'fake wid'
+const wid2 = 'fake wid2'
 const marriage = new Date(1990, 1, 1)
 const divorce = new Date(1995, 1, 1)
 
@@ -352,12 +355,81 @@ describe('US08: birthBeforeMarriageOfParents', function () {
 // describe('US10: marriageAfter14', function () {
 //   const marriageAfter14 = _validate.__get__('marriageAfter14')
 // })
-// describe('US11: noBigamy', function () {
-//   const noBigamy = _validate.__get__('noBigamy')
-// })
-// describe('US12: parentsNotTooOld', function () {
-//   const parentsNotTooOld = _validate.__get__('parentsNotTooOld')
-// })
+describe('US11: noBigamy', function () {
+  const noBigamy = _validate.__get__('noBigamy')
+
+  it('returns empty anomolies array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(noBigamy(indi, fami)).toEqual([])
+  })
+
+  it('returns array with only one anomily: wife overlapping marraiges', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, cBirth, undefined, famc, fams)]
+    ])
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [id], marriage, divorce)],
+      [fid2, new Fami(fid2, hid2, wid, undefined, marriage, undefined)]
+    ])
+    
+    expect(noBigamy(indi, fami)).toEqual([`US11: wife(${wid}) marriage(${fid2}) on ${formatDate(marriage)} cannot have the same date as marriage(${fid}) on ${formatDate(marriage)}`])
+  })
+
+  it('returns array with only one anomily: husband overlapping marraiges', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, cBirth, undefined, famc, fams)]
+    ])
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [id], marriage, divorce)],
+      [fid2, new Fami(fid2, hid, wid2, undefined, earlyDate, undefined)]
+    ])
+    
+    expect(noBigamy(indi, fami)).toEqual([`US11: husband(${hid}) marriage(${fid2}) on ${formatDate(earlyDate)} cannot occur during marriage(${fid}) on ${formatDate(marriage)}`])
+  })
+  
+})
+describe('US12: parentsNotTooOld', function () {
+  const parentsNotTooOld = _validate.__get__('parentsNotTooOld')
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map()
+    const fami = new Map()
+    
+    expect(parentsNotTooOld(indi, fami)).toEqual([])
+  })
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, cBirth, undefined, famc, fams)],
+      [hid, new Indi(hid, name, sex, birth, undefined, famc, fams)],
+      [wid, new Indi(wid, name, sex, birth, undefined, famc, fams)]
+    ])
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [id], marriage, divorce)],
+    ])
+
+    expect(parentsNotTooOld(indi, fami)).toEqual([])
+  })
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, cBirth, undefined, famc, fams)],
+      [hid, new Indi(hid, name, sex, earlyDate, undefined, famc, fams)],
+      [wid, new Indi(wid, name, sex, birth, undefined, famc, fams)]
+    ])
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [id], marriage, divorce)],
+    ])
+
+    const husbAge = getAge(earlyDate, undefined)
+    const childAge = getAge(cBirth, undefined)
+
+    expect(parentsNotTooOld(indi, fami)).toEqual([`US12: husband(${hid}) age ${husbAge} of marriage: marriage(${fid}) cannot be 80 (total: ${husbAge - childAge}) years older than child ${id} of age ${childAge}`])
+  })
+
+})
 // describe('US13: siblingsSpacing', function () {
 //   const siblingsSpacing = _validate.__get__('siblingsSpacing')
 // })

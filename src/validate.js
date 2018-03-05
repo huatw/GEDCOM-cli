@@ -297,7 +297,7 @@ const marriageAfter14 = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const noBigamy = (indi, fami) => {
+const noBigamy = (fami) => {
   const anomalies = []
   const famMap = {}
 
@@ -311,17 +311,10 @@ const noBigamy = (indi, fami) => {
     }
 
     famMap[wid].forEach(({id: fid, marriage: marri, divorce: divor}) => {
-      // cannot compare Date directly
       if (marri.getTime() === marriage.getTime()) {
         anomalies.push(`US11: wife(${wid}) marriage(${id}) on ${formatDate(marriage)} cannot have the same date as marriage(${fid}) on ${formatDate(marri)}`)
-      } else if (marri < marriage) {
-        if (marriage <= divor) {
-          anomalies.push(`US11: wife(${wid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
-        }
-      } else {
-        if (marri <= divorce) {
-          anomalies.push(`US11: wife(${wid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
-        }
+      } else if ((marri < marriage && marriage <= divor) || (marri >= marriage && marriage <= divorce)) {
+        anomalies.push(`US11: wife(${wid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
       }
     })
 
@@ -334,14 +327,8 @@ const noBigamy = (indi, fami) => {
     famMap[hid].forEach(({id: fid, marriage: marri, divorce: divor}) => {
       if (marri.getTime() === marriage.getTime()) {
         anomalies.push(`US11: husband(${hid}) marriage(${id}) on ${formatDate(marriage)} cannot have the same date as marriage(${fid}) on ${formatDate(marri)}`)
-      } else if (marri < marriage) {
-        if (marriage <= divor) {
-          anomalies.push(`US11: husband(${hid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
-        }
-      } else {
-        if (marri <= divorce) {
-          anomalies.push(`US11: husband(${hid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
-        }
+      } else if ((marri < marriage && marriage <= divor) || (marri >= marriage && marriage <= divor)) {
+        anomalies.push(`US11: husband(${hid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
       }
     })
 

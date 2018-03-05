@@ -362,7 +362,7 @@ describe('US11: noBigamy', function () {
     const indi = new Map()
     const fami = new Map()
 
-    expect(noBigamy(indi, fami)).toEqual([])
+    expect(noBigamy(fami)).toEqual([])
   })
 
   it('returns array with only one anomily: wife overlapping marraiges', () => {
@@ -374,7 +374,7 @@ describe('US11: noBigamy', function () {
       [fid2, new Fami(fid2, hid2, wid, undefined, marriage, undefined)]
     ])
     
-    expect(noBigamy(indi, fami)).toEqual([`US11: wife(${wid}) marriage(${fid2}) on ${formatDate(marriage)} cannot have the same date as marriage(${fid}) on ${formatDate(marriage)}`])
+    expect(noBigamy(fami)).toEqual([`US11: wife(${wid}) marriage(${fid2}) on ${formatDate(marriage)} cannot have the same date as marriage(${fid}) on ${formatDate(marriage)}`])
   })
 
   it('returns array with only one anomily: husband overlapping marraiges', () => {
@@ -386,7 +386,7 @@ describe('US11: noBigamy', function () {
       [fid2, new Fami(fid2, hid, wid2, undefined, earlyDate, undefined)]
     ])
     
-    expect(noBigamy(indi, fami)).toEqual([`US11: husband(${hid}) marriage(${fid2}) on ${formatDate(earlyDate)} cannot occur during marriage(${fid}) on ${formatDate(marriage)}`])
+    expect(noBigamy(fami)).toEqual([`US11: husband(${hid}) marriage(${fid2}) on ${formatDate(earlyDate)} cannot occur during marriage(${fid}) on ${formatDate(marriage)}`])
   })
   
 })

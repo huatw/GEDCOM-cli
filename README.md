@@ -1,5 +1,17 @@
 # GEDCOM-cli
 
+## About
+
+A Node.js terminal tool that parses input [GEDCOM](http://en.wikipedia.org/wiki/GEDCOM) files, displays family relationships in table and detects errors or anomalies in individual information and relationship.
+
+## Design
+
+* Read raw GEDCOM
+* Parse every line into ```Line``` model
+* Transform each ```Line``` into ```Family``` or ```Individual``` model
+* Output individuals and families as two tables
+* Validate and output errors or anomalies message
+
 ## Usage
 
 ```bash
@@ -7,10 +19,11 @@
 git clone <..>
 
 # download dependencies
-yarn install # or npm install
+yarn install
 
 # parse specific file
 yarn start parse -f gedcom/pass/test.ged
+
 # parse all files under specific directory
 yarn start parse -d <folder>
 
@@ -26,9 +39,3 @@ yarn start -h
 # run unit test
 yarn run test
 ```
-
-## todo
-main function and workflow is done.
-
-* more user stories(in validate.js)
-* more testing cases of user stories(in test folder)

@@ -380,7 +380,7 @@ const parentsNotTooOld = ({indi, fami}) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const siblingsSpacing = (indi, fami) => {
+const siblingsSpacing = ({indi, fami}) => {
   const anomalies = []
   // TODO
   return anomalies
@@ -393,7 +393,7 @@ const siblingsSpacing = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const multipleBirthsNoLargerThan5 = (indi, fami) => {
+const multipleBirthsNoLargerThan5 = ({indi, fami}) => {
   const anomalies = []
   // TODO
   return anomalies
@@ -406,7 +406,7 @@ const multipleBirthsNoLargerThan5 = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const fewerThan15Siblings = (indi, fami) => {
+const fewerThan15Siblings = ({indi, fami}) => {
   const anomalies = []
   // TODO
   return anomalies
@@ -419,7 +419,7 @@ const fewerThan15Siblings = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const maleLastNames = (indi, fami) => {
+const maleLastNames = ({indi, fami}) => {
   const anomalies = []
   // TODO
   return anomalies
@@ -432,7 +432,7 @@ const maleLastNames = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const noMarriagesToDescendants = (indi, fami) => {
+const noMarriagesToDescendants = ({indi, fami}) => {
   const anomalies = []
   // TODO
   return anomalies
@@ -445,7 +445,7 @@ const noMarriagesToDescendants = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const siblingsShouldNotMarry = (indi, fami) => {
+const siblingsShouldNotMarry = ({indi, fami}) => {
   const anomalies = []
   // TODO
   return anomalies
@@ -458,7 +458,7 @@ const siblingsShouldNotMarry = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const firstCousinsShouldNotMarry = (indi, fami) => {
+const firstCousinsShouldNotMarry = ({indi, fami}) => {
   const anomalies = []
   // TODO
   return anomalies
@@ -471,7 +471,7 @@ const firstCousinsShouldNotMarry = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const auntsAndUncles = (indi, fami) => {
+const auntsAndUncles = ({indi, fami}) => {
   const anomalies = []
   // TODO
   return anomalies
@@ -484,7 +484,7 @@ const auntsAndUncles = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const correctGenderForRole = (indi, fami) => {
+const correctGenderForRole = ({indi, fami}) => {
   const anomalies = []
   // TODO
   return anomalies
@@ -499,7 +499,7 @@ const correctGenderForRole = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const uniqueNameAndBirthDate = (indi, fami) => {
+const uniqueNameAndBirthDate = ({indi, fami}) => {
   const anomalies = []
   // TODO
   return anomalies
@@ -513,7 +513,7 @@ const uniqueNameAndBirthDate = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const uniqueFamiliesBySpouses = (indi, fami) => {
+const uniqueFamiliesBySpouses = ({indi, fami}) => {
   const anomalies = []
   // TODO
   return anomalies
@@ -526,7 +526,7 @@ const uniqueFamiliesBySpouses = (indi, fami) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const uniqueFirstNamesInFamilies = (indi, fami) => {
+const uniqueFirstNamesInFamilies = ({indi, fami}) => {
   const anomalies = []
   // TODO
   return anomalies

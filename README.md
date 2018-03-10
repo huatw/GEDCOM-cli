@@ -1,5 +1,7 @@
 # GEDCOM-cli
 
+[![Build Status](https://travis-ci.org/huatw/GEDCOM-cli.svg?branch=master)](https://travis-ci.org/huatw/GEDCOM-cli)
+
 ## About
 
 A Node.js terminal tool that parses input [GEDCOM](http://en.wikipedia.org/wiki/GEDCOM) files, displays family relationships in table and detects errors or anomalies in individual information and relationship.

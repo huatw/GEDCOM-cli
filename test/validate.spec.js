@@ -412,7 +412,7 @@ describe('US10: marriageAfter14', function () {
     ])
 
     expect(marriageAfter14({indi, fami})).toEqual([
-      `US10: marriage ${formatDate(marriage)} of family(${fid}) should be 14 years after birth(${formatDate(lateDate)}) of husband(${wid}).`
+      `US10: marriage ${formatDate(marriage)} of family(${fid}) should be 14 years after birth(${formatDate(lateDate)}) of wife(${wid}).`
     ])
   })
 

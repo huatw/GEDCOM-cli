@@ -283,7 +283,7 @@ const marriageAfter14 = ({indi, fami}) => {
     const wBirth = indi.get(wid).birth
     const wAge = getAge(wBirth, marriage)
     if (wAge < 14) {
-      anomalies.push(`US10: marriage ${formatDate(marriage)} of family(${id}) should be 14 years after birth(${formatDate(wBirth)}) of husband(${wid}).`)
+      anomalies.push(`US10: marriage ${formatDate(marriage)} of family(${id}) should be 14 years after birth(${formatDate(wBirth)}) of wife(${wid}).`)
     }
   })
 

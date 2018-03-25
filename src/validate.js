@@ -3,7 +3,9 @@
 const {
   formatDate,
   getAge,
-  flatMap
+  flatMap,
+  diffDay,
+  diffMonth
 } = require('./util')
 
 /**
@@ -382,7 +384,23 @@ const parentsNotTooOld = ({indi, fami}) => {
  */
 const siblingsSpacing = ({indi, fami}) => {
   const anomalies = []
-  // TODO
+
+  fami.forEach(({id, cids}) => {
+    const children = []
+
+    cids.forEach((cid) => {
+      const child = indi.get(cid)
+
+      children.forEach(sibling => {
+        if (diffDay(sibling.birth, child.birth) >= 2 && diffMonth(sibling.birth, child.birth) < 8) {
+          anomalies.push(`US13: Family(${id}), birth dates(${sibling.id}(${formatDate(sibling.birth)}) and ${child.id}(${formatDate(child.birth)})) of siblings(${sibling.name}, ${child.name}) should be less than 2 days apart or more than 8 months apart.`)
+        }
+      })
+
+      children.push(child)
+    })
+  })
+
   return anomalies
 }
 
@@ -395,7 +413,32 @@ const siblingsSpacing = ({indi, fami}) => {
  */
 const multipleBirthsNoLargerThan5 = ({indi, fami}) => {
   const anomalies = []
-  // TODO
+
+  fami.forEach(({id, cids}) => {
+    if (cids.length <= 5) {
+      return
+    }
+
+    const children = {}
+
+    cids.forEach((cid) => {
+      const child = indi.get(cid)
+      const birthStr = formatDate(child.birth)
+
+      if (!children[birthStr]) {
+        children[birthStr] = []
+      }
+      children[birthStr].push(child)
+    })
+
+    Object.entries(children).forEach(([birthStr, childArr]) => {
+      if (childArr.length > 5) {
+        const ids = childArr.map(child => child.id)
+        anomalies.push(`US14: Family(${id}) should have no more than 5 siblings(${ids}) born at the same time(${birthStr})`)
+      }
+    })
+  })
+
   return anomalies
 }
 

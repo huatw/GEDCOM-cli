@@ -6,6 +6,7 @@ const {
   formatDate,
   getAge
 } = require('../src/util')
+
 const Indi = require('../src/models/Indi')
 const Fami = require('../src/models/Fami')
 
@@ -500,13 +501,65 @@ describe('US12: parentsNotTooOld', function () {
   })
 })
 
+describe('US13: siblingsSpacing', function () {
+  const siblingsSpacing = _validate.__get__('siblingsSpacing')
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(siblingsSpacing({indi, fami})).toEqual([])
+  })
+
+  it('returns an anomalies', () => {
+    const badBirth = new Date(1992, 1, 10)
+
+    const indi = new Map([
+      [id, new Indi(id, name, sex, cBirth, undefined, famc, fams)],
+      [hid, new Indi(hid, name, sex, badBirth, undefined, famc, fams)]
+    ])
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [id, hid], marriage)]
+    ])
+
+    expect(siblingsSpacing({indi, fami})).toEqual([
+      `US13: Family(${fid}), birth dates(${id}(${formatDate(cBirth)}) and ${hid}(${formatDate(badBirth)})) of siblings(${name}, ${name}) should be less than 2 days apart or more than 8 months apart.`
+    ])
+  })
+})
+
+describe('US14: multipleBirthsNoLargerThan5', function () {
+  const multipleBirthsNoLargerThan5 = _validate.__get__('multipleBirthsNoLargerThan5')
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(multipleBirthsNoLargerThan5({indi, fami})).toEqual([])
+  })
+
+  it('returns an anomalies', () => {
+    const ids = [id, hid, hid2, wid, wid2, fid2]
+
+    const indi = new Map([
+      [id, new Indi(id, name, sex, cBirth, undefined, famc, fams)],
+      [hid, new Indi(hid, name, sex, cBirth, undefined, famc, fams)],
+      [hid2, new Indi(hid2, name, sex, cBirth, undefined, famc, fams)],
+      [wid, new Indi(wid, name, sex, cBirth, undefined, famc, fams)],
+      [wid2, new Indi(wid2, name, sex, cBirth, undefined, famc, fams)],
+      [fid2, new Indi(fid2, name, sex, cBirth, undefined, famc, fams)]
+    ])
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, ids, marriage)]
+    ])
+
+    expect(multipleBirthsNoLargerThan5({indi, fami})).toEqual([
+      `US14: Family(${fid}) should have no more than 5 siblings(${ids}) born at the same time(${formatDate(cBirth)})`
+    ])
+  })
+})
+
 // TODO
-// describe('US13: siblingsSpacing', function () {
-//   const siblingsSpacing = _validate.__get__('siblingsSpacing')
-// })
-// describe('US14: multipleBirthsNoLargerThan5', function () {
-//   const multipleBirthsNoLargerThan5 = _validate.__get__('multipleBirthsNoLargerThan5')
-// })
 // describe('US15: fewerThan15Siblings', function () {
 //   const fewerThan15Siblings = _validate.__get__('fewerThan15Siblings')
 // })

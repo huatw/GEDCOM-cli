@@ -566,9 +566,53 @@ describe('US14: multipleBirthsNoLargerThan5', function () {
 // describe('US16: maleLastNames', function () {
 //   const maleLastNames = _validate.__get__('maleLastNames')
 // })
-// describe('US17: noMarriagesToDescendants', function () {
-//   const noMarriagesToDescendants = _validate.__get__('noMarriagesToDescendants')
-// })
+describe('US17: noMarriagesToDescendants', function () {
+  const noMarriagesToDescendants = _validate.__get__('noMarriagesToDescendants')
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(noMarriagesToDescendants({indi, fami})).toEqual([])
+  })
+
+  it('returns an anomaly', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, cBirth, undefined, famc, fams)],
+      [hid, new Indi(hid, name, sex, cBirth, undefined, famc, fams)],
+      [wid, new Indi(wid, name, sex, cBirth, undefined, famc, fams)]
+    ])
+
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [id], marriage)],
+      [fid2, new Fami(fid2, id, wid, [], marriage)]
+    ])
+
+    expect(noMarriagesToDescendants({indi, fami})).toEqual([
+      `US17: Child(${id}) should not be married to parent(${wid}) in family(${fid2})`
+    ])
+  })
+
+  it('returns an anomaly', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, cBirth, undefined, famc, fams)],
+      [hid, new Indi(hid, name, sex, cBirth, undefined, famc, fams)],
+      [wid, new Indi(wid, name, sex, cBirth, undefined, famc, fams)],
+      [hid2, new Indi(hid2, name, sex, cBirth, undefined, famc, fams)]
+    ])
+
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [id], marriage)],
+      [fid2, new Fami(fid2, id, wid, [hid], marriage)]
+    ])
+
+    expect(noMarriagesToDescendants({indi, fami})).toEqual([
+      `US17: Husband(${hid}) should not be a child to parent(${wid}) in family(${fid2})`,
+      `US17: Child(${id}) should not be married to parent(${wid}) in family(${fid2})`
+    ])
+  })
+
+})
 // describe('US18: siblingsShouldNotMarry', function () {
 //   const siblingsShouldNotMarry = _validate.__get__('siblingsShouldNotMarry')
 // })

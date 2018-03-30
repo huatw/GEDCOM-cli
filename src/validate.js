@@ -477,7 +477,48 @@ const maleLastNames = ({indi, fami}) => {
  */
 const noMarriagesToDescendants = ({indi, fami}) => {
   const anomalies = []
-  // TODO
+
+  //This relations object will store each individual that is a spouse, their significant others, and their children
+  let relations = {};
+
+  //Loop over each family checking if the husband and wife exist in the relations table
+  fami.forEach(({id, hid, wid, cids}) => {
+    //If they exist in the relations table check that each child to be added isn't an SO and check that the husband isn't their child
+    if(relations[wid]) {
+      cids.forEach((cid) => {
+        if(relations[wid].SO.indexOf(cid) != -1) {
+          anomalies.push(`US17: Husband(${cid}) should not be a child to parent(${wid}) in family(${id})`) 
+        }
+        relations[wid].children.push(cid)
+      })
+      if(relations[wid].children.indexOf(hid) != -1) {
+        anomalies.push(`US17: Child(${hid}) should not be married to parent(${wid}) in family(${id})`)
+      }
+      relations[wid].SO.push(hid)
+    } else {
+      relations[wid] = {
+        SO: [hid],
+        children: cids
+      }
+    }
+    if(relations[hid]) {
+      cids.forEach((cid) => {
+        if(relations[hid].SO.indexOf(cid) != -1) {
+          anomalies.push(`US17: Wife(${cid}) should not be a child to parent(${hid}) in family(${id})`) 
+        }
+        relations[hid].children.push(cid)
+      })
+      if(relations[hid].children.indexOf(wid) != -1) {
+        anomalies.push(`US17: Child(${wid}) should not be married to parent(${hid}) in family(${id})`)
+      }
+      relations[hid].SO.push(wid)
+    } else {
+      relations[hid] = {
+        SO: [wid],
+        children: cids.slice()
+      }
+    }
+  })
   return anomalies
 }
 

@@ -641,9 +641,7 @@ describe('US17: noMarriagesToDescendants', function () {
 
   it('returns an anomaly', () => {
     const indi = new Map([
-      [id, new Indi(id, name, sex, cBirth, undefined, famc, fams)],
-      [hid, new Indi(hid, name, sex, cBirth, undefined, famc, fams)],
-      [wid, new Indi(wid, name, sex, cBirth, undefined, famc, fams)]
+      [id, new Indi(id, name, sex, cBirth, undefined, fid, [fid2])]
     ])
 
     const fami = new Map([
@@ -652,26 +650,7 @@ describe('US17: noMarriagesToDescendants', function () {
     ])
 
     expect(noMarriagesToDescendants({indi, fami})).toEqual([
-      `US17: Child(${id}) should not be married to parent(${wid}) in family(${fid2})`
-    ])
-  })
-
-  it('returns an anomaly', () => {
-    const indi = new Map([
-      [id, new Indi(id, name, sex, cBirth, undefined, famc, fams)],
-      [hid, new Indi(hid, name, sex, cBirth, undefined, famc, fams)],
-      [wid, new Indi(wid, name, sex, cBirth, undefined, famc, fams)],
-      [hid2, new Indi(hid2, name, sex, cBirth, undefined, famc, fams)]
-    ])
-
-    const fami = new Map([
-      [fid, new Fami(fid, hid, wid, [id], marriage)],
-      [fid2, new Fami(fid2, id, wid, [hid], marriage)]
-    ])
-
-    expect(noMarriagesToDescendants({indi, fami})).toEqual([
-      `US17: Husband(${hid}) should not be a child to parent(${wid}) in family(${fid2})`,
-      `US17: Child(${id}) should not be married to parent(${wid}) in family(${fid2})`
+      `US17: Mother(${wid}) should not marry to son(${id}) in family ${fid} and ${fid2}`
     ])
   })
 })

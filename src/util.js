@@ -2,6 +2,8 @@
 
 const formatDate = d => d === undefined ? 'NA' : d.toLocaleDateString()
 
+const getLastName = name => name.split(/\s+/).pop()
+
 /**
  * getAge by one's birthday
  * count to death if death exists
@@ -85,6 +87,7 @@ const flatMap = (iterable, fn) => {
 
 module.exports = {
   formatDate,
+  getLastName,
   diffDay,
   diffMonth,
   getAge,

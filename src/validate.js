@@ -2,6 +2,7 @@
 
 const {
   formatDate,
+  getLastName,
   getAge,
   flatMap,
   diffDay,
@@ -449,9 +450,15 @@ const multipleBirthsNoLargerThan5 = ({indi, fami}) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const fewerThan15Siblings = ({indi, fami}) => {
+const fewerThan15Siblings = ({fami}) => {
   const anomalies = []
-  // TODO
+
+  fami.forEach(({id, cids}) => {
+    if (cids.length >= 15) {
+      anomalies.push(`US15: There should be fewer than 15 siblings in a family(${id})`)
+    }
+  })
+
   return anomalies
 }
 
@@ -464,7 +471,23 @@ const fewerThan15Siblings = ({indi, fami}) => {
  */
 const maleLastNames = ({indi, fami}) => {
   const anomalies = []
-  // TODO
+
+  fami.forEach(({id, hname, cids}) => {
+    if (cids.length > 0) {
+      const hLastName = getLastName(hname)
+
+      for (const cid of cids) {
+        const child = indi.get(cid)
+        const cLastName = getLastName(child.name)
+
+        if (cLastName !== hLastName) {
+          anomalies.push(`US16: All male members of a family(${id}) should have the same last name`)
+          break
+        }
+      }
+    }
+  })
+
   return anomalies
 }
 

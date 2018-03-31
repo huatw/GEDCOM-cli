@@ -559,13 +559,76 @@ describe('US14: multipleBirthsNoLargerThan5', function () {
   })
 })
 
-// TODO
-// describe('US15: fewerThan15Siblings', function () {
-//   const fewerThan15Siblings = _validate.__get__('fewerThan15Siblings')
-// })
-// describe('US16: maleLastNames', function () {
-//   const maleLastNames = _validate.__get__('maleLastNames')
-// })
+describe('US15: fewerThan15Siblings', function () {
+  const fewerThan15Siblings = _validate.__get__('fewerThan15Siblings')
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(fewerThan15Siblings({indi, fami})).toEqual([])
+  })
+
+  it('returns an anomalies', () => {
+    const cids = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16']
+
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, cids, marriage)]
+    ])
+
+    expect(fewerThan15Siblings({fami})).toEqual([
+      `US15: There should be fewer than 15 siblings in a family(${fid})`
+    ])
+  })
+})
+
+describe('US16: maleLastNames', function () {
+  const maleLastNames = _validate.__get__('maleLastNames')
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(maleLastNames({indi, fami})).toEqual([])
+  })
+
+  it('returns no anomaly', () => {
+    const sameLastName = `${name} WHATEVER`
+    const family = new Fami(fid, hid, wid, [id], marriage, divorce)
+    family.hname = sameLastName
+
+    const indi = new Map([
+      [id, new Indi(id, sameLastName, sex, cBirth, undefined, famc, fams)],
+      [hid, new Indi(hid, sameLastName, sex, earlyDate, undefined, famc, fams)],
+      [wid, new Indi(wid, name, sex, birth, undefined, famc, fams)]
+    ])
+    const fami = new Map([
+      [fid, family]
+    ])
+
+    expect(maleLastNames({indi, fami})).toEqual([])
+  })
+
+  it('returns an anomalies', () => {
+    const wrongName = 'FOO BAR'
+    const family = new Fami(fid, hid, wid, [id], marriage, divorce)
+    family.hname = name
+
+    const indi = new Map([
+      [id, new Indi(id, wrongName, sex, cBirth, undefined, famc, fams)],
+      [hid, new Indi(hid, name, sex, earlyDate, undefined, famc, fams)],
+      [wid, new Indi(wid, name, sex, birth, undefined, famc, fams)]
+    ])
+    const fami = new Map([
+      [fid, family]
+    ])
+
+    expect(maleLastNames({indi, fami})).toEqual([
+      `US16: All male members of a family(${fid}) should have the same last name`
+    ])
+  })
+})
+
 describe('US17: noMarriagesToDescendants', function () {
   const noMarriagesToDescendants = _validate.__get__('noMarriagesToDescendants')
 
@@ -611,8 +674,8 @@ describe('US17: noMarriagesToDescendants', function () {
       `US17: Child(${id}) should not be married to parent(${wid}) in family(${fid2})`
     ])
   })
-
 })
+
 // describe('US18: siblingsShouldNotMarry', function () {
 //   const siblingsShouldNotMarry = _validate.__get__('siblingsShouldNotMarry')
 // })

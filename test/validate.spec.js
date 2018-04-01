@@ -655,9 +655,31 @@ describe('US17: noMarriagesToDescendants', function () {
   })
 })
 
-// describe('US18: siblingsShouldNotMarry', function () {
-//   const siblingsShouldNotMarry = _validate.__get__('siblingsShouldNotMarry')
-// })
+describe('US18: siblingsShouldNotMarry', function () {
+  const siblingsShouldNotMarry = _validate.__get__('siblingsShouldNotMarry')
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(siblingsShouldNotMarry({indi, fami})).toEqual([])
+  })
+
+  it('returns an anomaly', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, cBirth, undefined, fid, [fid2])]
+    ])
+
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [id, wid2], marriage)],
+      [fid2, new Fami(fid2, id, wid2, [], marriage)]
+    ])
+
+    expect(siblingsShouldNotMarry({indi, fami})).toEqual([
+      `US18: Sibling(${id}) and sibling(${wid2}) should not be married in family(${fid2})`
+    ])
+  })
+})
 // describe('US19: firstCousinsShouldNotMarry', function () {
 //   const firstCousinsShouldNotMarry = _validate.__get__('firstCousinsShouldNotMarry')
 // })

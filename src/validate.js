@@ -532,7 +532,23 @@ const noMarriagesToDescendants = ({indi, fami}) => {
  */
 const siblingsShouldNotMarry = ({indi, fami}) => {
   const anomalies = []
-  // TODO
+  indi.forEach(({id, sex, famc, fams}) => {
+    if(famc && fams.length > 0) {
+      let cfam = fami.get(famc)
+      for(const fam in fams) {
+        let sfam = fami.get(fams[fam])
+        if(sex == "M") {
+          if(cfam.cids.indexOf(sfam.wid) > -1) {
+            anomalies.push(`US18: Sibling(${id}) and sibling(${sfam.wid}) should not be married in family(${fams[fam]})`)
+          }
+        } else {
+          if(cfam.cids.indexOf(sfam.hid) > -1) {
+            anomalies.push(`US18: Sibling(${id}) and sibling(${sfam.hid}) should not be married in family(${fams[fam]})`)
+          }
+        }
+      }
+    }
+  })
   return anomalies
 }
 

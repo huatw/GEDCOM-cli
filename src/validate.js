@@ -316,7 +316,7 @@ const noBigamy = ({fami}) => {
     famMap[wid].forEach(({id: fid, marriage: marri, divorce: divor}) => {
       if (marri.getTime() === marriage.getTime()) {
         anomalies.push(`US11: wife(${wid}) marriage(${id}) on ${formatDate(marriage)} cannot have the same date as marriage(${fid}) on ${formatDate(marri)}`)
-      } else if ((marri < marriage && marriage <= divor) || (marri >= marriage && marriage <= divorce)) {
+      } else if ((marri < marriage && marriage <= divor) || (marri >= marriage && divor <= divorce)) {
         anomalies.push(`US11: wife(${wid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
       }
     })
@@ -330,7 +330,7 @@ const noBigamy = ({fami}) => {
     famMap[hid].forEach(({id: fid, marriage: marri, divorce: divor}) => {
       if (marri.getTime() === marriage.getTime()) {
         anomalies.push(`US11: husband(${hid}) marriage(${id}) on ${formatDate(marriage)} cannot have the same date as marriage(${fid}) on ${formatDate(marri)}`)
-      } else if ((marri < marriage && marriage <= divor) || (marri >= marriage && marriage <= divor)) {
+      } else if ((marri < marriage && marriage <= divor) || (marri >= marriage && divor <= divorce)) {
         anomalies.push(`US11: husband(${hid}) marriage(${id}) on ${formatDate(marriage)} cannot occur during marriage(${fid}) on ${formatDate(marri)}`)
       }
     })
@@ -532,23 +532,24 @@ const noMarriagesToDescendants = ({indi, fami}) => {
  */
 const siblingsShouldNotMarry = ({indi, fami}) => {
   const anomalies = []
+
   indi.forEach(({id, sex, famc, fams}) => {
-    if(famc && fams.length > 0) {
-      let cfam = fami.get(famc)
-      for(const fam in fams) {
-        let sfam = fami.get(fams[fam])
-        if(sex == "M") {
-          if(cfam.cids.indexOf(sfam.wid) > -1) {
-            anomalies.push(`US18: Sibling(${id}) and sibling(${sfam.wid}) should not be married in family(${fams[fam]})`)
-          }
-        } else {
-          if(cfam.cids.indexOf(sfam.hid) > -1) {
-            anomalies.push(`US18: Sibling(${id}) and sibling(${sfam.hid}) should not be married in family(${fams[fam]})`)
+    if (famc && fams.length > 0) {
+      const cFam = fami.get(famc)
+
+      fams.forEach(fam => {
+        const sFam = fami.get(fam)
+
+        // only need to check male, elsewise, same spouse will be added twice.
+        if (sex === 'M') {
+          if (cFam.cids.includes(sFam.wid)) {
+            anomalies.push(`US18: Sibling(${id}) and sibling(${sFam.wid}) should not be married in family(${fam})`)
           }
         }
-      }
+      })
     }
   })
+
   return anomalies
 }
 

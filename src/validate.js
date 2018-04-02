@@ -481,6 +481,7 @@ const maleLastNames = ({indi, fami}) => {
 
         if (cLastName !== hLastName) {
           anomalies.push(`US16: All male members of a family(${id}) should have the same last name`)
+          // Once we find error in one member of the fam we do not check for the rest.
           break
         }
       }

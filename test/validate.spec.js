@@ -680,12 +680,67 @@ describe('US18: siblingsShouldNotMarry', function () {
     ])
   })
 })
-// describe('US19: firstCousinsShouldNotMarry', function () {
-//   const firstCousinsShouldNotMarry = _validate.__get__('firstCousinsShouldNotMarry')
-// })
-// describe('US20: auntsAndUncles', function () {
-//   const auntsAndUncles = _validate.__get__('auntsAndUncles')
-// })
+
+describe('US19: firstCousinsShouldNotMarry', function () {
+  const firstCousinsShouldNotMarry = _validate.__get__('firstCousinsShouldNotMarry')
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(firstCousinsShouldNotMarry({indi, fami})).toEqual([])
+  })
+
+  it('returns an anomaly', () => {
+    const indi = new Map([
+      [wid, new Indi(wid, name, sex, cBirth, undefined, undefined, ['fid'])],
+      [hid, new Indi(hid, name, sex, cBirth, undefined, 'upperfid', ['fid'])],
+      [id, new Indi(id, name, sex, cBirth, undefined, 'fid', [fid])],
+      ['uncle', new Indi('uncle', name, sex, cBirth, undefined, 'upperfid', ['fid2'])],
+      ['cousin', new Indi('cousin', name, sex, cBirth, undefined, 'fid2', [fid])]
+    ])
+
+    const fami = new Map([
+      ['fid', new Fami('fid', hid, wid, [id], marriage)],
+      ['upperfid', new Fami('upperfid', hid, wid, [hid, 'uncle'], marriage)],
+      ['fid2', new Fami('fid2', 'uncle', wid, ['cousin'], marriage)]
+    ])
+
+    expect(firstCousinsShouldNotMarry({indi, fami})).toEqual([
+      `US19: First cousins should not marry one another in family(${fid})`
+    ])
+  })
+})
+
+describe('US20: auntsAndUncles', function () {
+  const auntsAndUncles = _validate.__get__('auntsAndUncles')
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(auntsAndUncles({indi, fami})).toEqual([])
+  })
+
+  it('returns an anomaly', () => {
+    const indi = new Map([
+      [wid, new Indi(wid, name, sex, cBirth, undefined, undefined, ['fid'])],
+      [hid, new Indi(hid, name, sex, cBirth, undefined, 'upperfid', ['fid'])],
+      [id, new Indi(id, name, sex, cBirth, undefined, 'fid', [fid])],
+      ['uncle', new Indi('uncle', name, sex, cBirth, undefined, 'upperfid', [fid])]
+    ])
+
+    const fami = new Map([
+      ['fid', new Fami('fid', hid, wid, [id], marriage)],
+      ['upperfid', new Fami('upperfid', hid, wid, [hid, 'uncle'], marriage)]
+    ])
+
+    expect(auntsAndUncles({indi, fami})).toEqual([
+      `US20: Aunts/uncles and nieces/nephews should not be married in family(${fid})`
+    ])
+  })
+})
+
 // describe('US21: correctGenderForRole', function () {
 //   const correctGenderForRole = _validate.__get__('correctGenderForRole')
 // })

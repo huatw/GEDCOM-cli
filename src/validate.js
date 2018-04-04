@@ -562,7 +562,42 @@ const siblingsShouldNotMarry = ({indi, fami}) => {
  */
 const firstCousinsShouldNotMarry = ({indi, fami}) => {
   const anomalies = []
-  // TODO
+  const anomalFams = new Set()
+
+  fami.forEach(({id, hid, wid, cids}) => {
+    const husband = indi.get(hid)
+    const wife = indi.get(wid)
+    if (cids.length === 0 || (!husband.famc && !wife.famc)) {
+      return
+    }
+
+    const cFams = flatMap(cids, cid => indi.get(cid).fams)
+    const cFamSet = new Set(cFams)
+
+    const hUpperFam = fami.get(husband.famc) || {cids: []}
+    const wUpperFam = fami.get(wife.famc) || {cids: []}
+    const auntUncles = [
+      ...hUpperFam.cids.filter(cid => cid !== hid),
+      ...wUpperFam.cids.filter(cid => cid !== wid)
+    ]
+    const auntUncleFams = flatMap(
+      auntUncles,
+      id => indi.get(id).fams.map(fid => fami.get(fid))
+    )
+    const cousins = flatMap(auntUncleFams, fam => fam.cids)
+    const cousinFams = flatMap(cousins, cid => indi.get(cid).fams)
+
+    cousinFams.forEach(fam => {
+      if (cFamSet.has(fam)) {
+        anomalFams.add(fam)
+      }
+    })
+  })
+
+  anomalFams.forEach(fam => {
+    anomalies.push(`US19: First cousins should not marry one another in family(${fam})`)
+  })
+
   return anomalies
 }
 
@@ -575,7 +610,37 @@ const firstCousinsShouldNotMarry = ({indi, fami}) => {
  */
 const auntsAndUncles = ({indi, fami}) => {
   const anomalies = []
-  // TODO
+  const anomalFams = new Set()
+
+  fami.forEach(({id, hid, wid, cids}) => {
+    const husband = indi.get(hid)
+    const wife = indi.get(wid)
+    if (cids.length === 0 || (!husband.famc && !wife.famc)) {
+      return
+    }
+
+    const cFams = flatMap(cids, cid => indi.get(cid).fams)
+    const cFamSet = new Set(cFams)
+
+    const hUpperFam = fami.get(husband.famc) || {cids: []}
+    const wUpperFam = fami.get(wife.famc) || {cids: []}
+    const auntUncles = [
+      ...hUpperFam.cids.filter(cid => cid !== hid),
+      ...wUpperFam.cids.filter(cid => cid !== wid)
+    ]
+    const auntUncleFams = flatMap(auntUncles, id => indi.get(id).fams)
+
+    auntUncleFams.forEach(fam => {
+      if (cFamSet.has(fam)) {
+        anomalFams.add(fam)
+      }
+    })
+  })
+
+  anomalFams.forEach(fam => {
+    anomalies.push(`US20: Aunts/uncles and nieces/nephews should not be married in family(${fam})`)
+  })
+
   return anomalies
 }
 

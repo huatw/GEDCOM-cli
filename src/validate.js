@@ -644,6 +644,7 @@ const auntsAndUncles = ({indi, fami}) => {
 
   return anomalies
 }
+
 /**
  * US21: Anomalies
  * Husband in family should be male and wife in family should be female
@@ -651,15 +652,15 @@ const auntsAndUncles = ({indi, fami}) => {
  * @param {fami Map} fami
  * @return {Array}
  */
-const correctGenderForRole = ({ indi, fami }) => {
+const correctGenderForRole = ({indi, fami}) => {
   const anomalies = []
 
-  fami.forEach(({ id, hid, wid }) => {
+  fami.forEach(({id, hid, wid}) => {
     const husband = indi.get(hid)
     const wife = indi.get(wid)
 
     if (husband.sex !== 'M' || wife.sex !== 'F') {
-      anamolies.push(`US21: Husband in family(${id}) should be male and wife in family should be female`)
+      anomalies.push(`US21: Husband in family(${id}) should be male and wife in family should be female`)
     }
   })
 
@@ -677,21 +678,18 @@ const correctGenderForRole = ({ indi, fami }) => {
  */
 const uniqueNameAndBirthDate = ({indi}) => {
   const anomalies = []
+
   const nameBirthMap = {}
 
   indi.forEach(({id, birth, name}) => {
     const key = `${name}_${formatDate(birth)}`
-
-    if (nameBirthMap[key]) {
-      nameBirthMap[key].push(id)
-    } else {
-      nameBirthMap[key] = [id]
-    }
+    nameBirthMap[key] = nameBirthMap[key] || []
+    nameBirthMap[key].push(id)
   })
 
   Object.values(nameBirthMap).forEach(ids => {
     if (ids.length > 1) {
-      anomalies.push(`US23:No more than one individual(${ids}) with the same name and birth date should appear in a GEDCOM file `)
+      anomalies.push(`US23: No more than one individual(${ids}) with the same name and birth date should appear in a GEDCOM file `)
     }
   })
 

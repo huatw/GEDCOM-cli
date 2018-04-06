@@ -741,12 +741,51 @@ describe('US20: auntsAndUncles', function () {
   })
 })
 
-// describe('US21: correctGenderForRole', function () {
-//   const correctGenderForRole = _validate.__get__('correctGenderForRole')
-// })
-// describe('US23: uniqueNameAndBirthDate', function () {
-//   const uniqueNameAndBirthDate = _validate.__get__('uniqueNameAndBirthDate')
-// })
+describe('US21: correctGenderForRole', function () {
+  const correctGenderForRole = _validate.__get__('correctGenderForRole')
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(correctGenderForRole({indi, fami})).toEqual([])
+  })
+
+  it('returns an anomalies', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, cBirth, undefined, famc, fams)]
+    ])
+    const fami = new Map([
+      [fid, new Fami(fid, id, id, [], marriage)]
+    ])
+
+    expect(correctGenderForRole({indi, fami})).toEqual([
+      `US21: Husband in family(${fid}) should be male and wife in family should be female`
+    ])
+  })
+})
+
+describe('US23: uniqueNameAndBirthDate', function () {
+  const uniqueNameAndBirthDate = _validate.__get__('uniqueNameAndBirthDate')
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map()
+
+    expect(uniqueNameAndBirthDate({indi})).toEqual([])
+  })
+
+  it('returns an anomalies', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, cBirth, undefined, famc, fams)],
+      [hid, new Indi(hid, name, sex, cBirth, undefined, famc, fams)]
+    ])
+
+    expect(uniqueNameAndBirthDate({indi})).toEqual([
+      `US23: No more than one individual(${[id, hid]}) with the same name and birth date should appear in a GEDCOM file `
+    ])
+  })
+})
+
 // describe('US24: uniqueFamiliesBySpouses', function () {
 //   const uniqueFamiliesBySpouses = _validate.__get__('uniqueFamiliesBySpouses')
 // })

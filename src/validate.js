@@ -671,7 +671,7 @@ const correctGenderForRole = ({indi, fami}) => {
 
 /**
  * US23: Anomalies
- * No more than one indiv:taidual with the same name and birth date should appear in a GEDCOM file
+ * No more than one individual with the same name and birth date should appear in a GEDCOM file
  * @param {indi Map} indi
  * @param {fami Map} fami
  * @return {Array}
@@ -716,7 +716,7 @@ const uniqueFamiliesBySpouses = ({indi, fami}) => {
 
   Object.values(spouseNameMap).forEach(ids => {
     if(ids.length > 1) {
-      anomalies.push(`US24: No more than one family(${ids}) with the same spouses by name should appear in a GEDCOM file`)
+      anomalies.push(`US24: No more than one family(${ids}) with the same spouses by name should appear in a GEDCOM file `)
     }
   })
   return anomalies

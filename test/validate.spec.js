@@ -796,22 +796,16 @@ describe('US24: uniqueFamiliesBySpouses', function () {
   })
 
   it('returns an anomaly', () => {
-    const indi = new Map([
-      [wid, new Indi(wid, name, sex, cBirth, undefined, famc, fams)],
-      [hid, new Indi(hid, name, sex, cBirth, undefined, famc, fams)],
-      [hid2, new Indi(hid, name, sex, cBirth, undefined, famc, fams)],
-      [wid2, new Indi(wid, name, sex, cBirth, undefined, famc, fams)],
-    ])
-    let fid = 'fid'
-    let fid2 = 'fid2'
-    let fidArray = [fid, fid2]
+    const fidArray = [fid, fid2]
 
     const fami = new Map([
       [fid, new Fami(fid, hid, wid, [], marriage)],
       [fid2, new Fami(fid2, hid2, wid2, [], marriage)]
     ])
 
-    expect(uniqueFamiliesBySpouses({fami})).toEqual(['US24: No more than one family(' + fidArray + ') with the same spouses by name should appear in a GEDCOM file'])
+    expect(uniqueFamiliesBySpouses({fami})).toEqual([
+      `US24: No more than one family(${fidArray}) with the same spouses by name should appear in a GEDCOM file`
+    ])
   })
 })
 describe('US25: uniqueFirstNamesInFamilies', function () {
@@ -831,12 +825,11 @@ describe('US25: uniqueFirstNamesInFamilies', function () {
     ])
 
     const fami = new Map([
-      [fid, new Fami(fid, hid, wid, [id, wid], marriage)],
+      [fid, new Fami(fid, hid, wid, [id, wid], marriage)]
     ])
 
     expect(uniqueFirstNamesInFamilies({indi, fami})).toEqual([
       `US25: No more than one child(${id},${wid}) with the same name and birth date should appear in a family`
     ])
   })
-
 })

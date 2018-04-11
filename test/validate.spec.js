@@ -814,6 +814,29 @@ describe('US24: uniqueFamiliesBySpouses', function () {
     expect(uniqueFamiliesBySpouses({fami})).toEqual(['US24: No more than one family(' + fidArray + ') with the same spouses by name should appear in a GEDCOM file'])
   })
 })
-// describe('US25: uniqueFirstNamesInFamilies', function () {
-//   const uniqueFirstNamesInFamilies = _validate.__get__('uniqueFirstNamesInFamilies')
-// })
+describe('US25: uniqueFirstNamesInFamilies', function () {
+  const uniqueFirstNamesInFamilies = _validate.__get__('uniqueFirstNamesInFamilies')
+
+  it('returns an empty anomalies array', () => {
+    const indi = new Map()
+    const fami = new Map()
+
+    expect(uniqueFirstNamesInFamilies({indi, fami})).toEqual([])
+  })
+
+  it('returns an anomaly', () => {
+    const indi = new Map([
+      [id, new Indi(id, name, sex, cBirth, undefined, fid, [fid2])],
+      [wid, new Indi(wid, name, sex, cBirth, undefined, fid, [fid2])]
+    ])
+
+    const fami = new Map([
+      [fid, new Fami(fid, hid, wid, [id, wid], marriage)],
+    ])
+
+    expect(uniqueFirstNamesInFamilies({indi, fami})).toEqual([
+      `US25: No more than one child(${id},${wid}) with the same name and birth date should appear in a family`
+    ])
+  })
+
+})

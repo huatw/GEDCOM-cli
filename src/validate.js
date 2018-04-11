@@ -716,7 +716,7 @@ const uniqueFamiliesBySpouses = ({indi, fami}) => {
 
   Object.values(spouseNameMap).forEach(ids => {
     if(ids.length > 1) {
-      anomalies.push(`US24: No more than one family(${ids}) with the same spouses by name should appear in a GEDCOM file `)
+      anomalies.push(`US24: No more than one family(${ids}) with the same spouses by name should appear in a GEDCOM file`)
     }
   })
   return anomalies
@@ -731,7 +731,22 @@ const uniqueFamiliesBySpouses = ({indi, fami}) => {
  */
 const uniqueFirstNamesInFamilies = ({indi, fami}) => {
   const anomalies = []
-  // TODO
+
+  fami.forEach(({id, cids}) => {
+    const childNameBirthMap = {}
+    cids.forEach((cid) => {
+      const child = indi.get(cid)
+      const key = `${child.name}_${child.birth}`
+      childNameBirthMap[key] = childNameBirthMap[key] || []
+      childNameBirthMap[key].push(cid)  
+    })
+
+    Object.values(childNameBirthMap).forEach(ids => {
+      if(ids.length > 1) {
+        anomalies.push(`US25: No more than one child(${ids}) with the same name and birth date should appear in a family`)
+      }
+    })
+  })
   return anomalies
 }
 
